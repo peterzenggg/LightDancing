@@ -1,0 +1,688 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using HidSharp;
+using LightDancing.Colors;
+using LightDancing.Common;
+using LightDancing.Enums;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Diagnostics;
+
+namespace LightDancing.Hardware.Devices
+{
+    internal class SolidyearKeebController : ILightingControl
+    {
+        private const int DEVICE_VID = 0x3402;
+        private const int DEVICE_PID = 0x0300;
+        private const int MAX_FEATURE_LENGTH = 65;
+        private const int MAX_OUTPUT_LENGTH = 65;
+        private const int MAX_INPUT_LENGTH = 65;
+
+        public List<USBDeviceBase> InitDevices()
+        {
+            HidDetector hidDetector = new HidDetector();
+            List<HidStream> streams = hidDetector.GetHidStreams(DEVICE_VID, DEVICE_PID, MAX_FEATURE_LENGTH, MAX_OUTPUT_LENGTH, MAX_INPUT_LENGTH);
+
+            if (streams != null && streams.Count > 0)
+            {
+                List<USBDeviceBase> hardwares = new List<USBDeviceBase>();
+                foreach (HidStream stream in streams)
+                {
+                    SolidyearKeyboardDevice keyboard = new SolidyearKeyboardDevice(stream);
+                    hardwares.Add(keyboard);
+                }
+
+                return hardwares;
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+
+    public class SolidyearKeyboardDevice : USBDeviceBase
+    {
+        public SolidyearKeyboardDevice(HidStream deviceStream) : base(deviceStream)
+        {
+        }
+
+        protected override List<LightingBase> InitDevice()
+        {
+            List<LightingBase> hardwares = new List<LightingBase>();
+            SolidyearKeyboard keyboard = new SolidyearKeyboard(_model);
+            hardwares.Add(keyboard);
+
+            return hardwares;
+        }
+
+        protected override HardwareModel InitModel()
+        {
+            string deviceID = _deviceStream.Device.DevicePath;
+            return new HardwareModel()
+            {
+                FirmwareVersion = "",
+                DeviceID = deviceID,
+                //Type = LightingDevices.SolidyearKeyboard,
+                Name = "SolidYear Keeb",
+            };
+        }
+
+        protected override void SendToHardware(bool process, float brightness)
+        {
+            if (process)
+            {
+                foreach (var device in _lightingBase)
+                {
+                    device.ProcessStreaming(false, brightness);
+                }
+            }
+        }
+    }
+
+    public class SolidyearKeyboard : LightingBase
+    {
+        /// <summary>
+        /// Keyboard Y-Axis count
+        /// </summary>
+        private const int KEYBOARD_YAXIS_COUNTS = 14;
+
+        /// <summary>
+        /// Keyboard X-Axis count
+        /// </summary>
+        private const int KEYBOARD_XAXIS_COUNTS = 27;
+
+        /// <summary>
+        /// Max command report length
+        /// </summary>
+        private const int MAX_REPORT_LENGTH = 65;
+
+        /// <summary>
+        /// Timer 
+        /// </summary>
+        private DurationTimer durationTimer = new DurationTimer(20);
+
+        /// <summary>
+        /// key = keyboard's key, Value = 2D position on Keyboard (ex: ESC = (0, 0)), item1 = y position, item2 = x position
+        /// </summary>
+        private readonly Dictionary<Keyboard, Tuple<int, int>> KEYS_LAYOUTS = new Dictionary<Keyboard, Tuple<int, int>>()
+        {
+            //Row 1
+            { Keyboard.TopLED1,      Tuple.Create(0, 1) },
+            { Keyboard.TopLED2,      Tuple.Create(0, 2) },
+            { Keyboard.TopLED3,      Tuple.Create(0, 3) },
+            { Keyboard.TopLED4,      Tuple.Create(0, 4) },
+            { Keyboard.TopLED5,      Tuple.Create(0, 5) },
+            { Keyboard.TopLED6,      Tuple.Create(0, 6) },
+            { Keyboard.TopLED7,      Tuple.Create(0, 7) },
+            { Keyboard.TopLED8,      Tuple.Create(0, 8) },
+            { Keyboard.TopLED9,      Tuple.Create(0, 9) },
+            { Keyboard.TopLED10,     Tuple.Create(0, 10) },
+            { Keyboard.TopLED11,     Tuple.Create(0, 11) },
+            { Keyboard.TopLED12,     Tuple.Create(0, 12) },
+            { Keyboard.TopLED13,     Tuple.Create(0, 13) },
+            { Keyboard.TopLED14,     Tuple.Create(0, 14) },
+            { Keyboard.TopLED15,     Tuple.Create(0, 15) },
+            { Keyboard.TopLED16,     Tuple.Create(0, 16) },
+            { Keyboard.TopLED17,     Tuple.Create(0, 17) },
+            { Keyboard.TopLED18,     Tuple.Create(0, 18) },
+            { Keyboard.TopLED19,     Tuple.Create(0, 19) },
+            { Keyboard.TopLED20,     Tuple.Create(0, 20) },
+            { Keyboard.TopLED21,     Tuple.Create(0, 21) },
+            { Keyboard.TopLED22,     Tuple.Create(0, 22) },
+            { Keyboard.TopLED23,     Tuple.Create(0, 23) },
+            { Keyboard.TopLED24,     Tuple.Create(0, 24) },
+            { Keyboard.TopLED25,     Tuple.Create(0, 25) },
+            //Row 2
+            { Keyboard.LeftLED1,     Tuple.Create(1, 0)  },
+            { Keyboard.MediaLED1,    Tuple.Create(1, 17) },
+            { Keyboard.MediaLED2,    Tuple.Create(1, 19) },
+            { Keyboard.MediaLED3,    Tuple.Create(1, 21) },
+            { Keyboard.MediaLED4,    Tuple.Create(1, 23) },
+            { Keyboard.MediaLED5,    Tuple.Create(1, 25) },
+            { Keyboard.RightLED1,    Tuple.Create(1, 26) },
+            //Row 4
+            { Keyboard.LeftLED2,     Tuple.Create(3, 0)  },
+            { Keyboard.ESC,          Tuple.Create(3, 2)  },
+            { Keyboard.One,          Tuple.Create(3, 4)  },
+            { Keyboard.Two,          Tuple.Create(3, 6)  },
+            { Keyboard.Three,        Tuple.Create(3, 8)  },
+            { Keyboard.Four,         Tuple.Create(3, 9)  },
+            { Keyboard.Five,         Tuple.Create(3, 10) },
+            { Keyboard.Six,          Tuple.Create(3, 11) },
+            { Keyboard.Seven,        Tuple.Create(3, 12) },
+            { Keyboard.Eight,        Tuple.Create(3, 13) },
+            { Keyboard.Nine,         Tuple.Create(3, 14) },
+            { Keyboard.Zero,         Tuple.Create(3, 15) },
+            { Keyboard.Hyphen,       Tuple.Create(3, 17) },
+            { Keyboard.Plus,         Tuple.Create(3, 19) },
+            { Keyboard.BackSpace,    Tuple.Create(3, 21) },
+            { Keyboard.DELETE,       Tuple.Create(3, 24) },
+            { Keyboard.RightLED2,    Tuple.Create(3, 26) },
+            //Row 6
+            { Keyboard.LeftLED3,     Tuple.Create(5, 0)  },
+            { Keyboard.Tab,          Tuple.Create(5, 3)  },
+            { Keyboard.Q,            Tuple.Create(5, 5)  },
+            { Keyboard.W,            Tuple.Create(5, 7)  },
+            { Keyboard.E,            Tuple.Create(5, 9)  },
+            { Keyboard.R,            Tuple.Create(5, 10) },
+            { Keyboard.T,            Tuple.Create(5, 11) },
+            { Keyboard.Y,            Tuple.Create(5, 12) },
+            { Keyboard.U,            Tuple.Create(5, 13) },
+            { Keyboard.I,            Tuple.Create(5, 14) },
+            { Keyboard.O,            Tuple.Create(5, 15) },
+            { Keyboard.P,            Tuple.Create(5, 16) },
+            { Keyboard.LeftBracket,  Tuple.Create(5, 18) },
+            { Keyboard.RightBracket, Tuple.Create(5, 20) },
+            { Keyboard.BackSlash,    Tuple.Create(5, 22) },
+            { Keyboard.HOME,         Tuple.Create(5, 24) },
+            { Keyboard.RightLED3,    Tuple.Create(5, 26) },
+            //Row 8
+            { Keyboard.LeftLED4,     Tuple.Create(7, 0)  },
+            { Keyboard.CapLock,      Tuple.Create(7, 4)  },
+            { Keyboard.A,            Tuple.Create(7, 6)  },
+            { Keyboard.S,            Tuple.Create(7, 8)  },
+            { Keyboard.D,            Tuple.Create(7, 10) },
+            { Keyboard.F,            Tuple.Create(7, 11) },
+            { Keyboard.G,            Tuple.Create(7, 12) },
+            { Keyboard.H,            Tuple.Create(7, 13) },
+            { Keyboard.J,            Tuple.Create(7, 14) },
+            { Keyboard.K,            Tuple.Create(7, 15) },
+            { Keyboard.L,            Tuple.Create(7, 16) },
+            { Keyboard.Semicolon,    Tuple.Create(7, 17) },
+            { Keyboard.SingleQuote,  Tuple.Create(7, 19) },
+            { Keyboard.Enter,        Tuple.Create(7, 21) },
+            { Keyboard.PAGEUp,       Tuple.Create(7, 24) },
+            { Keyboard.RightLED4,    Tuple.Create(7, 26) },
+            //Row 10
+            { Keyboard.LeftLED5,     Tuple.Create(9, 0)  },
+            { Keyboard.LeftShift,    Tuple.Create(9, 5)  },
+            { Keyboard.Z,            Tuple.Create(9, 7)  },
+            { Keyboard.X,            Tuple.Create(9, 9)  },
+            { Keyboard.C,            Tuple.Create(9, 11) },
+            { Keyboard.V,            Tuple.Create(9, 12) },
+            { Keyboard.B,            Tuple.Create(9, 13) },
+            { Keyboard.N,            Tuple.Create(9, 14) },
+            { Keyboard.M,            Tuple.Create(9, 15) },
+            { Keyboard.Comma,        Tuple.Create(9, 16) },
+            { Keyboard.Period,       Tuple.Create(9, 17) },
+            { Keyboard.Slash,        Tuple.Create(9, 18) },
+            { Keyboard.RightShift,   Tuple.Create(9, 20) },
+            { Keyboard.UP,           Tuple.Create(9, 22) },
+            { Keyboard.PAGEDown,     Tuple.Create(9, 24) },
+            { Keyboard.RightLED5,    Tuple.Create(9, 26) },
+            //Row 12
+            { Keyboard.LeftLED6,     Tuple.Create(11, 0)  },
+            { Keyboard.CTRL_L,       Tuple.Create(11, 2) },
+            { Keyboard.WIN_L,        Tuple.Create(11, 4) },
+            { Keyboard.ALT_L,        Tuple.Create(11, 6) },
+            { Keyboard.SPACE_L,      Tuple.Create(11, 10)},
+            { Keyboard.SPACE,        Tuple.Create(11, 11)},
+            { Keyboard.SPACE_R,      Tuple.Create(11, 12)},
+            { Keyboard.ALT_R,        Tuple.Create(11, 16)},
+            { Keyboard.FN,           Tuple.Create(11, 18)},
+            { Keyboard.BLOCKER,      Tuple.Create(11, 19)},
+            { Keyboard.LEFT,         Tuple.Create(11, 20)},
+            { Keyboard.DOWN,         Tuple.Create(11, 22)},
+            { Keyboard.RIGHT,        Tuple.Create(11, 24)},
+            { Keyboard.RightLED6,    Tuple.Create(11, 26) },
+            //Row 14
+            { Keyboard.BottomLED1,   Tuple.Create(13, 0) },
+            { Keyboard.BottomLED2,   Tuple.Create(13, 2) },
+            { Keyboard.BottomLED3,   Tuple.Create(13, 4) },
+            { Keyboard.BottomLED4,   Tuple.Create(13, 5) },
+            { Keyboard.BottomLED5,   Tuple.Create(13, 6) },
+            { Keyboard.BottomLED6,   Tuple.Create(13, 7) },
+            { Keyboard.BottomLED7,   Tuple.Create(13, 8) },
+            { Keyboard.BottomLED8,   Tuple.Create(13, 9) },
+            { Keyboard.BottomLED9,   Tuple.Create(13, 10)},
+            { Keyboard.BottomLED10,  Tuple.Create(13, 11)},
+            { Keyboard.BottomLED11,  Tuple.Create(13, 12)},
+            { Keyboard.BottomLED12,  Tuple.Create(13, 13)},
+            { Keyboard.BottomLED13,  Tuple.Create(13, 14)},
+            { Keyboard.BottomLED14,  Tuple.Create(13, 15)},
+            { Keyboard.BottomLED15,  Tuple.Create(13, 16)},
+            { Keyboard.BottomLED16,  Tuple.Create(13, 17)},
+            { Keyboard.BottomLED17,  Tuple.Create(13, 18)},
+            { Keyboard.BottomLED18,  Tuple.Create(13, 19)},
+            { Keyboard.BottomLED19,  Tuple.Create(13, 20)},
+            { Keyboard.BottomLED20,  Tuple.Create(13, 22)},
+            { Keyboard.BottomLED21,  Tuple.Create(13, 24)},
+            { Keyboard.BottomLED22,  Tuple.Create(13, 26)}
+        };
+
+        /// <summary>
+        /// Key = Command Sequence, Value = keys in each command
+        /// </summary>
+        private readonly Dictionary<int, List<Keyboard>> COMMAND_LAYOUT = new Dictionary<int, List<Keyboard>>()
+        {
+            {1, new List<Keyboard>(){   Keyboard.TopLED1,       Keyboard.TopLED2,       Keyboard.TopLED3,       Keyboard.TopLED4,       Keyboard.TopLED5,
+                                        Keyboard.TopLED6,       Keyboard.TopLED7,       Keyboard.TopLED8,       Keyboard.TopLED9,       Keyboard.TopLED10,
+                                        Keyboard.TopLED11,      Keyboard.TopLED12,      Keyboard.TopLED13,      Keyboard.TopLED14,      Keyboard.TopLED15,
+                                        Keyboard.TopLED16,      Keyboard.TopLED17,      Keyboard.TopLED18,      Keyboard.TopLED19,      Keyboard.TopLED20       } },
+
+            {2, new List<Keyboard>(){   Keyboard.TopLED21,      Keyboard.TopLED22,      Keyboard.TopLED23,      Keyboard.TopLED24,      Keyboard.TopLED25,
+                                        Keyboard.LeftLED1,      Keyboard.MediaLED1,     Keyboard.MediaLED2,     Keyboard.MediaLED3,     Keyboard.MediaLED4,
+                                        Keyboard.MediaLED5,     Keyboard.RightLED1,     Keyboard.LeftLED2,      Keyboard.RightLED2,     Keyboard.LeftLED3,
+                                        Keyboard.ESC,           Keyboard.One,           Keyboard.Two,           Keyboard.Three,         Keyboard.Four           } },
+
+            {3, new List<Keyboard>(){   Keyboard.Five,          Keyboard.Six,           Keyboard.Seven,         Keyboard.Eight,         Keyboard.Nine,
+                                        Keyboard.Zero,          Keyboard.Hyphen,        Keyboard.Plus,          Keyboard.BackSpace,     Keyboard.DELETE,
+                                        Keyboard.RightLED3,     Keyboard.LeftLED4,      Keyboard.RightLED4,     Keyboard.LeftLED5,      Keyboard.Tab,
+                                        Keyboard.Q,             Keyboard.W,             Keyboard.E,             Keyboard.R,             Keyboard.T              } },
+
+            {4, new List<Keyboard>(){   Keyboard.Y,             Keyboard.U,             Keyboard.I,             Keyboard.O,             Keyboard.P,
+                                        Keyboard.LeftBracket,   Keyboard.RightBracket,  Keyboard.BackSlash,     Keyboard.HOME,          Keyboard.RightLED5,
+                                        Keyboard.LeftLED6,      Keyboard.RightLED6,     Keyboard.CapLock,       Keyboard.A,             Keyboard.S,
+                                        Keyboard.D,             Keyboard.F,             Keyboard.G,             Keyboard.H,             Keyboard.J              } },
+
+            {5, new List<Keyboard>(){   Keyboard.K,             Keyboard.L,             Keyboard.Semicolon,     Keyboard.SingleQuote,   Keyboard.Enter,
+                                        Keyboard.PAGEUp,        Keyboard.LeftShift,     Keyboard.Z,             Keyboard.X,             Keyboard.C,
+                                        Keyboard.V,             Keyboard.B,             Keyboard.N,             Keyboard.M,             Keyboard.Comma,
+                                        Keyboard.Period,        Keyboard.Slash,         Keyboard.RightShift,    Keyboard.UP,            Keyboard.PAGEDown       } },
+
+            {6, new List<Keyboard>(){   Keyboard.CTRL_L,        Keyboard.WIN_L,         Keyboard.ALT_L,         Keyboard.NA,            Keyboard.SPACE_L,
+                                        Keyboard.SPACE,         Keyboard.NA,            Keyboard.SPACE_R,       Keyboard.ALT_R,         Keyboard.FN,
+                                        Keyboard.BLOCKER,       Keyboard.LEFT,          Keyboard.DOWN,          Keyboard.RIGHT,         Keyboard.BottomLED1,
+                                        Keyboard.BottomLED2,    Keyboard.BottomLED3,    Keyboard.BottomLED4,    Keyboard.BottomLED5,    Keyboard.BottomLED6     } },
+
+            {7, new List<Keyboard>(){   Keyboard.BottomLED7,    Keyboard.BottomLED8,    Keyboard.BottomLED9,    Keyboard.BottomLED10,   Keyboard.BottomLED11,
+                                        Keyboard.BottomLED12,   Keyboard.BottomLED13,   Keyboard.BottomLED14,   Keyboard.BottomLED15,   Keyboard.BottomLED16,
+                                        Keyboard.BottomLED17,   Keyboard.BottomLED18,   Keyboard.BottomLED19,   Keyboard.BottomLED20,   Keyboard.BottomLED21,
+                                        Keyboard.BottomLED22,   Keyboard.NA,            Keyboard.NA,            Keyboard.NA,            Keyboard.NA             } }
+        };
+
+        public SolidyearKeyboard(HardwareModel hardwareModel) : base(KEYBOARD_YAXIS_COUNTS, KEYBOARD_XAXIS_COUNTS, hardwareModel)
+        {
+        }
+
+        /// <summary>
+        /// Init the model
+        /// MEMO: Device ID should be unique, the better way is get it from the firmware.
+        /// Add Turn On Scroll Wheels
+        /// </summary>
+        /// <returns></returns>
+        protected override LightingModel InitModel()
+        {
+            SetKeyLayout();
+            TurnOnScrollWheels();
+            return new LightingModel()
+            {
+                Layouts = new MatrixLayouts() { Width = KEYBOARD_XAXIS_COUNTS, Height = KEYBOARD_YAXIS_COUNTS },
+                FirmwareVersion = _usbModel.FirmwareVersion,
+                DeviceID = _usbModel.DeviceID,
+                Name = "SolidYear Keeb",
+                //Type = LightingDevices.SolidyearKeyboard,
+            };
+        }
+
+        protected override void SetKeyLayout()
+        {
+            KeyboardLayout = new List<List<Keyboard>>()
+            { 
+                //Row 1
+                new List<Keyboard>(){ Keyboard.TopLED1, Keyboard.TopLED2, Keyboard.TopLED3, Keyboard.TopLED4, Keyboard.TopLED5, Keyboard.TopLED6, Keyboard.TopLED7,
+                                      Keyboard.TopLED8, Keyboard.TopLED9, Keyboard.TopLED10, Keyboard.TopLED11, Keyboard.TopLED12, Keyboard.TopLED13, Keyboard.TopLED14,
+                                      Keyboard.TopLED15, Keyboard.TopLED16, Keyboard.TopLED17,Keyboard.TopLED18, Keyboard.TopLED19, Keyboard.TopLED20, Keyboard.TopLED21,
+                                      Keyboard.TopLED22, Keyboard.TopLED23, Keyboard.TopLED24, Keyboard.TopLED25},
+                //Row 2
+                new List<Keyboard>(){ Keyboard.LeftLED1, Keyboard.MediaLED1, Keyboard.MediaLED2, Keyboard.MediaLED3, Keyboard.MediaLED4, Keyboard.MediaLED5, Keyboard.RightLED1 },
+                //Row 4
+                new List<Keyboard>(){ Keyboard.LeftLED2, Keyboard.ESC,Keyboard.One,Keyboard.Two, Keyboard.Three, Keyboard.Four,
+                                      Keyboard.Five, Keyboard.Six, Keyboard.Seven, Keyboard.Eight, Keyboard.Nine, Keyboard.Zero, Keyboard.Hyphen, Keyboard.Plus,
+                                      Keyboard.BackSpace, Keyboard.DELETE, Keyboard.RightLED2 },
+                //Row 6
+                new List<Keyboard>(){ Keyboard.LeftLED3, Keyboard.Tab, Keyboard.Q, Keyboard.W, Keyboard.E, Keyboard.R, Keyboard.T,
+                                      Keyboard.Y, Keyboard.U, Keyboard.I, Keyboard.O, Keyboard.P, Keyboard.LeftBracket, Keyboard.RightBracket, Keyboard.BackSlash,
+                                      Keyboard.HOME, Keyboard.RightLED3 },
+                //Row 8
+                new List<Keyboard>(){ Keyboard.LeftLED4, Keyboard.CapLock, Keyboard.A, Keyboard.S, Keyboard.D, Keyboard.F, Keyboard.G, Keyboard.H,
+                                      Keyboard.J, Keyboard.K, Keyboard.L, Keyboard.Semicolon, Keyboard.SingleQuote, Keyboard.Enter, Keyboard.PAGEUp, Keyboard.RightLED4 },
+                //Row 10
+                new List<Keyboard>(){ Keyboard.LeftLED5, Keyboard.LeftShift,Keyboard.Z, Keyboard.X, Keyboard.C, Keyboard.V,Keyboard.B,
+                                      Keyboard.N, Keyboard.M, Keyboard.Comma, Keyboard.Period, Keyboard.Slash,Keyboard.RightShift, Keyboard.UP, Keyboard.PAGEDown, Keyboard.RightLED5 },
+                //Row 12
+                new List<Keyboard>(){ Keyboard.LeftLED6, Keyboard.CTRL_L,Keyboard.WIN_L, Keyboard.ALT_L, Keyboard.SPACE_L, Keyboard.SPACE, Keyboard.SPACE_R,
+                                      Keyboard.ALT_R, Keyboard.FN, Keyboard.BLOCKER, Keyboard.LEFT, Keyboard.DOWN, Keyboard.RIGHT, Keyboard.RightLED6 },
+                //Row 14
+                new List<Keyboard>(){ Keyboard.BottomLED1, Keyboard.BottomLED2,Keyboard.BottomLED3, Keyboard.BottomLED4, Keyboard.BottomLED5,
+                                      Keyboard.BottomLED6, Keyboard.BottomLED7, Keyboard.BottomLED8, Keyboard.BottomLED9, Keyboard.BottomLED10, Keyboard.BottomLED11,
+                                      Keyboard.BottomLED12, Keyboard.BottomLED13, Keyboard.BottomLED14, Keyboard.BottomLED15, Keyboard.BottomLED16, Keyboard.BottomLED17,
+                                      Keyboard.BottomLED18, Keyboard.BottomLED19, Keyboard.BottomLED20, Keyboard.BottomLED21, Keyboard.BottomLED22 }
+            };
+        }
+
+        /// <summary>
+        /// Each command has 65 bytes, and total is 7 commands
+        /// Each commnad should contain 20 keys (or less)
+        /// When Solidyear needs to send data, it will delay time.  Lines 320 - 332
+        /// </summary>
+        /// <param name="colorMatrix"></param>
+        protected override void ProcessColor(ColorRGB[,] colorMatrix)
+        {
+            int loop_count = 0;
+            keyColor = new Dictionary<Keyboard, ColorRGB>();
+
+            foreach (var rowMappings in COMMAND_LAYOUT)
+            {
+                int count = 0;
+                byte[] result = new byte[MAX_REPORT_LENGTH];
+                result[1] = 0x11;
+                result[2] = 0xf0;
+                result[3] = (byte)rowMappings.Key;
+
+                foreach (Keyboard cloumn in rowMappings.Value)
+                {
+                    if (cloumn != Keyboard.NA)
+                    {
+                        var index = KEYS_LAYOUTS[cloumn];
+                        var color = colorMatrix[index.Item1, index.Item2];
+                        result[count * 3 + 5] = color.R;
+                        result[count * 3 + 6] = color.G;
+                        result[count * 3 + 7] = color.B;
+                        keyColor.Add(cloumn, color);
+                    }
+                    count++;
+                }
+
+                if (count <= 20)
+                {
+                    try
+                    {
+                        //_deviceStream.Write(result);
+                    }
+                    catch
+                    {
+                        Trace.WriteLine($"False to streaming on SolidyearKeyboard");
+                    }
+
+                    if (loop_count == 0)
+                    {
+                        durationTimer = new DurationTimer(4);
+                    }
+                    else
+                    {
+                        durationTimer = new DurationTimer(1);
+                    }
+
+                    do
+                    {
+                    }
+                    while (!durationTimer.IsAvailable());
+                }
+                loop_count++;
+            }
+        }
+
+        protected override void ProcessZoneSelection(Dictionary<Keyboard, ColorRGB> keyColors)
+        {
+            int loop_count = 0;
+            keyColor = new Dictionary<Keyboard, ColorRGB>();
+
+            foreach (var rowMappings in COMMAND_LAYOUT)
+            {
+                int count = 0;
+                byte[] result = new byte[MAX_REPORT_LENGTH];
+                result[1] = 0x11;
+                result[2] = 0xf0;
+                result[3] = (byte)rowMappings.Key;
+
+                foreach (Keyboard cloumn in rowMappings.Value)
+                {
+                    if (cloumn != Keyboard.NA && keyColors.ContainsKey(cloumn))
+                    {
+                        var color = keyColors[cloumn];
+                        result[count * 3 + 5] = color.R;
+                        result[count * 3 + 6] = color.G;
+                        result[count * 3 + 7] = color.B;
+                        keyColor.Add(cloumn, color);
+                    }
+                    else if (cloumn != Keyboard.NA && !keyColors.ContainsKey(cloumn))
+                    {
+                        result[count * 3 + 5] = 0;
+                        result[count * 3 + 6] = 0;
+                        result[count * 3 + 7] = 0;
+                        keyColor.Add(cloumn, ColorRGB.Black());
+                    }
+
+                    count++;
+                }
+
+                if (count <= 20)
+                {
+                    try
+                    {
+                        //_deviceStream.Write(result);
+                    }
+                    catch
+                    {
+                        Trace.WriteLine($"False to streaming on SolidyearKeyboard");
+                    }
+
+                    if (loop_count == 0)
+                    {
+                        durationTimer = new DurationTimer(4);
+                    }
+                    else
+                    {
+                        durationTimer = new DurationTimer(1);
+                    }
+
+                    do
+                    {
+                    }
+                    while (!durationTimer.IsAvailable());
+                }
+                loop_count++;
+            }
+        }
+
+        /// <summary>
+        /// Turn off Leds, write 0s
+        /// </summary>
+        protected override void TurnOffLed()
+        {
+            byte[] collectBytes = new byte[MAX_REPORT_LENGTH];
+            int loop_count = 0;
+
+            for (byte i = 1; i <= 7; i++)
+            {
+                collectBytes[1] = 0x11;
+                collectBytes[2] = 0xf0;
+                collectBytes[3] = i;
+
+                try
+                {
+                    //_deviceStream.Write(collectBytes);
+                }
+                catch
+                {
+                    Trace.WriteLine($"False to turn off on SolidyearKeyboard");
+                }
+
+                if (loop_count == 0)
+                {
+                    Thread.Sleep(4);
+                }
+                else
+                {
+                    Thread.Sleep(1);
+                }
+                loop_count++;
+            }
+        }
+
+        /// <summary>
+        /// Turn On/Off RGB LED , Turn On/Off Scroll Wheels
+        /// </summary>
+        private readonly object _locker = new object();
+        private CancellationTokenSource _cancelSource = new CancellationTokenSource();
+        private bool _isProcessing = false;
+        private ScrollWheelsMode _wheelMode;
+        private Action m_updateHandler;
+        public bool _isScrollWheelInvoke = false;
+        public override void SetLedTurnOn(bool isTurnOn)
+        {
+            base.SetLedTurnOn(isTurnOn);
+
+            if (!isTurnOn)
+            {
+                TurnOffScrollWheels();
+            }
+            else
+            {
+                TurnOnScrollWheels();
+            }
+        }
+
+        /// <summary>
+        /// Turn On Scroll Wheels
+        /// </summary>
+        public void TurnOnScrollWheels()
+        {
+            byte[] commands = new byte[MAX_REPORT_LENGTH];
+            commands[1] = 0x12;
+            commands[2] = 0x11;
+            try
+            {
+                //_deviceStream.Write(commands);
+
+                byte[] RXdata = new byte[MAX_REPORT_LENGTH];
+                //_deviceStream.Read(RXdata);
+
+                if (RXdata[1] == 0x12 && RXdata[2] == 0x11)
+                {
+                }
+                else
+                    Debug.WriteLine("Scrollwheel start didn't return the correct value");
+
+                SartScrollWheels();
+            }
+            catch
+            {
+                Trace.WriteLine($"False to turn on scroll wheel on SolidyearKeyboard");
+            }
+        }
+
+        /// <summary>
+        /// Turn Off Scroll Wheels
+        /// </summary>
+        public void TurnOffScrollWheels()
+        {
+            _cancelSource.Cancel();
+
+            lock (_locker)
+            {
+                _cancelSource = new CancellationTokenSource();
+                byte[] _commands = new byte[MAX_REPORT_LENGTH];
+                _commands[1] = 0x12;
+                _commands[2] = 0x10;
+                try
+                {
+                    //_deviceStream.Write(_commands);
+                }
+                catch
+                {
+                    Trace.WriteLine($"False to turn off scroll wheel SolidyearKeyboard");
+                }
+                Thread.Sleep(30);
+
+                if (commands[1] == 0x12 && commands[2] == 0x10)
+                {
+                }
+                else
+                {
+                    Debug.WriteLine("Scrollwheel cancellation didn't return the correct value");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Scroll Wheels four mode: TopLeft, BottomLeft, TopRight, BottomRight
+        /// </summary>
+        byte[] commands = new byte[MAX_REPORT_LENGTH];
+        public void SartScrollWheels()
+        {
+            CancellationToken cancelToken = _cancelSource.Token;
+
+            Task.Run(() =>
+            {
+                _isProcessing = false;
+
+                lock (_locker)
+                {
+                    _isProcessing = true;
+
+                    //var result = _deviceStream.ReadAsync(commands, 0, 65, cancelToken);
+
+                    while (_isProcessing)
+                    {
+                        if (cancelToken.IsCancellationRequested)
+                        {
+                            _isProcessing = false;
+                            return;
+                        }
+
+                        if (commands[1] == 0x01)
+                        {
+                            if (commands[35] == 0x20)           // ScrollWheels_TopLeft
+                            {
+                                _wheelMode = ScrollWheelsMode.ScrollWheels_TopLeft;
+                                _isScrollWheelInvoke = true;
+                                m_updateHandler?.Invoke();
+                            }
+
+                            if (commands[35] == 0x40)           // ScrollWheels_BottomLeft
+                            {
+                                _wheelMode = ScrollWheelsMode.ScrollWheels_BottomLeft;
+                                _isScrollWheelInvoke = true;
+                                m_updateHandler?.Invoke();
+                            }
+
+                            if (commands[39] == 0x20)           // ScrollWheels_TopRight
+                            {
+                                _wheelMode = ScrollWheelsMode.ScrollWheels_TopRight;
+                                _isScrollWheelInvoke = true;
+                                m_updateHandler?.Invoke();
+                            }
+
+                            if (commands[39] == 0x10)           // ScrollWheels_BottomRight
+                            {
+                                _wheelMode = ScrollWheelsMode.ScrollWheels_BottomRight;
+                                _isScrollWheelInvoke = true;
+                                m_updateHandler?.Invoke();
+                            }
+                        }
+
+                        //if (result.IsCompleted)
+                        //{
+                        //    commands = new byte[MAX_REPORT_LENGTH];
+                        //    result = _deviceStream.ReadAsync(commands, 0, 65, cancelToken);
+                        //    _wheelMode = ScrollWheelsMode.NA;
+                        //    _isScrollWheelInvoke = false;
+                        //}
+
+                        Thread.Sleep(30);
+                    }
+                }
+            }, cancelToken);
+        }
+
+        /// <summary>
+        /// call enum ScrollWheelsMode
+        /// </summary>
+        public ScrollWheelsMode GetDeviceScrollWheels()
+        {
+            return _wheelMode;
+        }
+
+        /// <summary>
+        /// UI call DLL, register update callback
+        /// </summary>
+        public void RegisterUpdateCallback(Action func)
+        {
+            m_updateHandler = func;
+        }
+    }
+}

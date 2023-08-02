@@ -1,0 +1,111 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightDancing", "LightDancing\LightDancing.csproj", "{B8A38A45-F06E-4D30-B00E-B14A5CF9D7E7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightDancingUnitTest", "LightDancingUnitTest\LightDancingUnitTest.csproj", "{D005FDC1-B120-4C21-B736-F9A1CD02F943}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoPackage", "AutoPackage\AutoPackage.csproj", "{120ACB82-1424-4957-B1C5-5F9FF6F7B92C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopDuplication", "DesktopDuplication\DesktopDuplication.csproj", "{222C215B-663F-4BD6-9B3E-8FA99C867B22}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaptureSampleCore", "CaptureSampleCore\CaptureSampleCore.csproj", "{93B82406-9A0D-4163-81B5-0A8A8513F74D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Composition.WindowsRuntimeHelpers", "Composition.WindowsRuntimeHelpers\Composition.WindowsRuntimeHelpers.csproj", "{B849E60B-5F12-4BF5-90F0-623F2AA36C4A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{A6C6ED5A-CC8A-4251-9C59-B0989963CB2F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HidSharp.NETStandard", "Library\HidSharp\HidSharp.NETStandard.csproj", "{0D5257C0-B19F-449E-A835-EDCF634DC470}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhilipsHueBridge", "PhilipsHueBridge", "{C23059C1-4E7D-42D4-A336-5E659209470A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HueApi", "Library\PhilipsHueBridge\HueApi\HueApi.csproj", "{F7CBA6E1-02C8-4E68-8654-B2BC647AE7D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HueApi.ColorConverters", "Library\PhilipsHueBridge\HueApi.ColorConverters\HueApi.ColorConverters.csproj", "{3391AB29-F818-4BCD-B2E0-91D19660EC42}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HueApi.Entertainment", "Library\PhilipsHueBridge\HueApi.Entertainment\HueApi.Entertainment.csproj", "{1673A120-EFED-4CFF-A6EE-8EF53D189BFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Q42.HueApi", "Library\PhilipsHueBridge\Q42.HueApi\Q42.HueApi.csproj", "{89DD74B1-FC0A-448C-867B-51088BB3658A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Q42.HueApi.ColorConverters", "Library\PhilipsHueBridge\Q42.HueApi.ColorConverters\Q42.HueApi.ColorConverters.csproj", "{2968C2AE-CD6D-4D04-861A-B745F5BFAC38}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Q42.HueApi.Streaming", "Library\PhilipsHueBridge\Q42.HueApi.Streaming\Q42.HueApi.Streaming.csproj", "{30981465-FD8E-4FF0-B385-437F9FC28A5C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B8A38A45-F06E-4D30-B00E-B14A5CF9D7E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8A38A45-F06E-4D30-B00E-B14A5CF9D7E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8A38A45-F06E-4D30-B00E-B14A5CF9D7E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8A38A45-F06E-4D30-B00E-B14A5CF9D7E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D005FDC1-B120-4C21-B736-F9A1CD02F943}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D005FDC1-B120-4C21-B736-F9A1CD02F943}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D005FDC1-B120-4C21-B736-F9A1CD02F943}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D005FDC1-B120-4C21-B736-F9A1CD02F943}.Release|Any CPU.Build.0 = Release|Any CPU
+		{120ACB82-1424-4957-B1C5-5F9FF6F7B92C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{120ACB82-1424-4957-B1C5-5F9FF6F7B92C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{120ACB82-1424-4957-B1C5-5F9FF6F7B92C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{120ACB82-1424-4957-B1C5-5F9FF6F7B92C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{222C215B-663F-4BD6-9B3E-8FA99C867B22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{222C215B-663F-4BD6-9B3E-8FA99C867B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{222C215B-663F-4BD6-9B3E-8FA99C867B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{222C215B-663F-4BD6-9B3E-8FA99C867B22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93B82406-9A0D-4163-81B5-0A8A8513F74D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93B82406-9A0D-4163-81B5-0A8A8513F74D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93B82406-9A0D-4163-81B5-0A8A8513F74D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93B82406-9A0D-4163-81B5-0A8A8513F74D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B849E60B-5F12-4BF5-90F0-623F2AA36C4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B849E60B-5F12-4BF5-90F0-623F2AA36C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B849E60B-5F12-4BF5-90F0-623F2AA36C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B849E60B-5F12-4BF5-90F0-623F2AA36C4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D5257C0-B19F-449E-A835-EDCF634DC470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D5257C0-B19F-449E-A835-EDCF634DC470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D5257C0-B19F-449E-A835-EDCF634DC470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D5257C0-B19F-449E-A835-EDCF634DC470}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7CBA6E1-02C8-4E68-8654-B2BC647AE7D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7CBA6E1-02C8-4E68-8654-B2BC647AE7D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7CBA6E1-02C8-4E68-8654-B2BC647AE7D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7CBA6E1-02C8-4E68-8654-B2BC647AE7D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3391AB29-F818-4BCD-B2E0-91D19660EC42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3391AB29-F818-4BCD-B2E0-91D19660EC42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3391AB29-F818-4BCD-B2E0-91D19660EC42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3391AB29-F818-4BCD-B2E0-91D19660EC42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1673A120-EFED-4CFF-A6EE-8EF53D189BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1673A120-EFED-4CFF-A6EE-8EF53D189BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1673A120-EFED-4CFF-A6EE-8EF53D189BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1673A120-EFED-4CFF-A6EE-8EF53D189BFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89DD74B1-FC0A-448C-867B-51088BB3658A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89DD74B1-FC0A-448C-867B-51088BB3658A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89DD74B1-FC0A-448C-867B-51088BB3658A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89DD74B1-FC0A-448C-867B-51088BB3658A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2968C2AE-CD6D-4D04-861A-B745F5BFAC38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2968C2AE-CD6D-4D04-861A-B745F5BFAC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2968C2AE-CD6D-4D04-861A-B745F5BFAC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2968C2AE-CD6D-4D04-861A-B745F5BFAC38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30981465-FD8E-4FF0-B385-437F9FC28A5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30981465-FD8E-4FF0-B385-437F9FC28A5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30981465-FD8E-4FF0-B385-437F9FC28A5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30981465-FD8E-4FF0-B385-437F9FC28A5C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0D5257C0-B19F-449E-A835-EDCF634DC470} = {A6C6ED5A-CC8A-4251-9C59-B0989963CB2F}
+		{C23059C1-4E7D-42D4-A336-5E659209470A} = {A6C6ED5A-CC8A-4251-9C59-B0989963CB2F}
+		{F7CBA6E1-02C8-4E68-8654-B2BC647AE7D3} = {C23059C1-4E7D-42D4-A336-5E659209470A}
+		{3391AB29-F818-4BCD-B2E0-91D19660EC42} = {C23059C1-4E7D-42D4-A336-5E659209470A}
+		{1673A120-EFED-4CFF-A6EE-8EF53D189BFD} = {C23059C1-4E7D-42D4-A336-5E659209470A}
+		{89DD74B1-FC0A-448C-867B-51088BB3658A} = {C23059C1-4E7D-42D4-A336-5E659209470A}
+		{2968C2AE-CD6D-4D04-861A-B745F5BFAC38} = {C23059C1-4E7D-42D4-A336-5E659209470A}
+		{30981465-FD8E-4FF0-B385-437F9FC28A5C} = {C23059C1-4E7D-42D4-A336-5E659209470A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45697BC8-02D9-4BAA-A8CC-A1A1A4F6A54F}
+	EndGlobalSection
+EndGlobal

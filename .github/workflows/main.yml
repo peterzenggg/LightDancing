@@ -1,0 +1,39 @@
+name: build
+
+on: 
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '3.1.x' ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Install dependencies and build
+        run: |
+          dotnet build -c Debug ./LightDancing/LightDancing.csproj
+          dotnet publish -c Debug -o ./LightDancing/publish ./LightDancing/LightDancing.csproj
+      
+      - name: Generate Release Tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GIT_TOKEN }}
+          create_annotated_tag: true
+      
+      - name: Release to GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+          files: "LightDancing/publish/*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}

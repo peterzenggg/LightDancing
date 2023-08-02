@@ -1,0 +1,411 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Company>iBuypower</Company>
+    <Authors>Product Team</Authors>
+    <Description>This library used to control iBuypower's  hardwares</Description>
+    <Copyright>https://www.ibuypower.com/company/terms</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="OpenTKs\Shaders\Animate\CheckboardFluid.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\ColorBounceBall.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\ColorRings.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\ColorShift.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\ColorStrip.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\ColorSwirl.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\FixColorRotate.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\FluidGrid.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\HalfColorCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\MeltingSmileFace.frag" />
+    <None Remove="OpenTKs\Shaders\Animate\MixColor.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Arrow.frag" />
+    <None Remove="OpenTKs\Shaders\Background\BackgroundBar.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Cartoon\CartoonBG1.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Cartoon\CartoonBG2.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Cartoon\CartoonBG3.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Cartoon\CartoonBG4.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Cartoon\CartoonBG5.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Cartoon\CartoonBG6.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Cartoon\CartoonBG7.frag" />
+    <None Remove="OpenTKs\Shaders\Background\ClappingBall.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Diamond.frag" />
+    <None Remove="OpenTKs\Shaders\Background\FadeCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Fire.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Flowers.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\CircleSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoLines.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoLines2.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoLines3.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoLines4.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoSquare2.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoSquare3.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoSquare4.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoSquare5.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoSquare6.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoSquare7.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\GeoSquare8.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\Hexagon.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Geo\RotateGeo.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Grid.frag" />
+    <None Remove="OpenTKs\Shaders\Background\GridRotate.frag" />
+    <None Remove="OpenTKs\Shaders\Background\HalfCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Background\HalfRainbow.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale1.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale10.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale11.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale12.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale2.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale3.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale4.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale5.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale6.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale7.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale8.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Kale\Kale9.frag" />
+    <None Remove="OpenTKs\Shaders\Background\KickBar.frag" />
+    <None Remove="OpenTKs\Shaders\Background\PopArt\MovingDotLarge.frag" />
+    <None Remove="OpenTKs\Shaders\Background\PopArt\MovingDots.frag" />
+    <None Remove="OpenTKs\Shaders\Background\PopArt\MovingSlope.frag" />
+    <None Remove="OpenTKs\Shaders\Background\PopArt\MovingTriangleWave.frag" />
+    <None Remove="OpenTKs\Shaders\Background\PopArt\PAHorizontalStrip.frag" />
+    <None Remove="OpenTKs\Shaders\Background\PopArt\VerticalStrip.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Rectangle.frag" />
+    <None Remove="OpenTKs\Shaders\Background\RoundCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Squares.frag" />
+    <None Remove="OpenTKs\Shaders\Background\StripRotate.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Triangle.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\AlienFlower.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\AlienFlower2.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\AlienShip.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\BottleRainbow.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\CheckboardFire.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\FadeAlien.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\FlowerShape.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\Hamburger.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\MeltSmile.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\Monster.frag" />
+    <None Remove="OpenTKs\Shaders\Background\Trip\Pacman.frag" />
+    <None Remove="OpenTKs\Shaders\Canvas.vert" />
+    <None Remove="OpenTKs\Shaders\Header.frag" />
+    <None Remove="OpenTKs\Shaders\MusicAnimate\CircleRamp.frag" />
+    <None Remove="OpenTKs\Shaders\MusicAnimate\CircleWave_2.frag" />
+    <None Remove="OpenTKs\Shaders\MusicAnimate\ColorRotate.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama1.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama2.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama3.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama4.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama5.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\CircleSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\CrossLines.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\DiamondLights.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidCircleSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoLines.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoLines2.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoLines3.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoLines4.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare2.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare3.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare4.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare5.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare6.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare7.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare8.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidHexagon.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Geo\MidRotateGeo.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\HeadLights.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Heart.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\HorizontalLines.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\HorizontalStrip.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\LineRotate.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\PanoramaBar.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\PopArt\CornerDot.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\PopArt\CornerTriangleWave.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\PopArt\DotSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\PopArt\FourSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Ripple.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\RotateCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\RotateDiamond.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\SpotLights.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Swirl.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\TriangleLine.frag" />
+    <None Remove="OpenTKs\Shaders\Panorama\Wave.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\BouncingBall.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist1.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist2.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist3.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist4.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist5.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist6.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighCircleSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoLines.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoLines2.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoLines3.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoLines4.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare2.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare3.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare4.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare5.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare6.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare7.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare8.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighHexagon.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Geo\HighRotateGeo.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Laser.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\PopArt\OSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\PopArt\RandomCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\PopArt\RandomCurve.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\PopArt\RandomRect.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\PopArt\TSquare.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\PopArt\TwoSideCircle.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\ProtagonistBar.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\RadiusLaser.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\Rain.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\RandomCross.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\RandomHeart.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\RandomString.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\RandomTarget.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\RandomTree.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\SquareWave.frag" />
+    <None Remove="OpenTKs\Shaders\Protagonist\StillBalls.frag" />
+    <None Remove="OpenTKs\Shaders\ShiftColors.frag" />
+    <None Remove="OpenTKs\Shaders\StillColors.frag" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\CheckboardFluid.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\ColorBounceBall.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\ColorRings.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\ColorShift.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\ColorStrip.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\ColorSwirl.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\FixColorRotate.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\FluidGrid.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\HalfColorCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\MeltingSmileFace.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Animate\MixColor.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Arrow.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\BackgroundBar.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Cartoon\CartoonBG1.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Cartoon\CartoonBG2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Cartoon\CartoonBG3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Cartoon\CartoonBG4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Cartoon\CartoonBG5.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Cartoon\CartoonBG6.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Cartoon\CartoonBG7.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\ClappingBall.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Diamond.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\FadeCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Fire.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Flowers.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\CircleSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoLines.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoLines2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoLines3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoLines4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoSquare2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoSquare3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoSquare4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoSquare5.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoSquare6.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoSquare7.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\GeoSquare8.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\Hexagon.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Geo\RotateGeo.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Grid.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\GridRotate.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\HalfCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\HalfRainbow.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale1.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale10.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale11.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale12.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale5.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale6.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale7.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale8.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Kale\Kale9.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\KickBar.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\PopArt\PAHorizontalStrip.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\PopArt\MovingDotLarge.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\PopArt\MovingDots.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\PopArt\MovingSlope.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\PopArt\MovingTriangleWave.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\PopArt\VerticalStrip.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Rectangle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\RoundCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Squares.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\StripRotate.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Triangle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\AlienFlower.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\AlienFlower2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\AlienShip.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\BottleRainbow.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\CheckboardFire.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\FadeAlien.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\FlowerShape.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\Hamburger.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\MeltSmile.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\Monster.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Background\Trip\Pacman.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Header.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\MusicAnimate\CircleRamp.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\MusicAnimate\CircleWave_2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\MusicAnimate\ColorRotate.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama1.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Cartoon\CartoonPanorama5.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\CircleSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\CrossLines.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\DiamondLights.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidCircleSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoLines.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoLines2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoLines3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoLines4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare5.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare6.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare7.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidGeoSquare8.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidHexagon.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Geo\MidRotateGeo.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\HeadLights.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Heart.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\HorizontalLines.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\HorizontalStrip.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\LineRotate.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\PanoramaBar.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\PopArt\CornerDot.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\PopArt\CornerTriangleWave.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\PopArt\DotSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\PopArt\FourSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Ripple.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\RotateCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\RotateDiamond.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\SpotLights.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Swirl.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\TriangleLine.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Panorama\Wave.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\BouncingBall.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist1.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist5.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Cartoon\CartoonProtagonist6.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighCircleSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoLines.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoLines2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoLines3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoLines4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare2.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare3.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare4.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare5.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare6.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare7.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighGeoSquare8.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighHexagon.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Geo\HighRotateGeo.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Laser.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\PopArt\OSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\PopArt\RandomCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\PopArt\RandomCurve.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\PopArt\RandomRect.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\PopArt\TSquare.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\PopArt\TwoSideCircle.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\ProtagonistBar.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\RadiusLaser.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\Rain.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\RandomCross.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\RandomHeart.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\RandomString.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\RandomTarget.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\RandomTree.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\SquareWave.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\Protagonist\StillBalls.frag" />
+    <EmbeddedResource Include="OpenTKs\Shaders\StillColors.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="OpenTKs\Shaders\Canvas.vert">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OpenTKs\Shaders\ShiftColors.frag">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DeepCloner" Version="0.10.2" />
+    <PackageReference Include="Emgu.CV" Version="4.3.0.3890" />
+    <PackageReference Include="Microsoft.ML" Version="1.6.0" />
+    <PackageReference Include="Microsoft.ML.LightGbm" Version="1.6.0" />
+    <PackageReference Include="NAudio" Version="2.0.1" />
+    <PackageReference Include="OpenTK" Version="4.6.4" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="System.Management" Version="5.0.0" />
+    <PackageReference Include="Zeroconf" Version="3.6.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CaptureSampleCore\CaptureSampleCore.csproj" />
+    <ProjectReference Include="..\DesktopDuplication\DesktopDuplication.csproj" />
+    <ProjectReference Include="..\Library\HidSharp\HidSharp.NETStandard.csproj" />
+    <ProjectReference Include="..\Library\PhilipsHueBridge\HueApi.ColorConverters\HueApi.ColorConverters.csproj" />
+    <ProjectReference Include="..\Library\PhilipsHueBridge\HueApi.Entertainment\HueApi.Entertainment.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AuraServiceLib">
+      <HintPath>..\Library\AuraServiceLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="MLs\Source\GenreModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Hardware\Devices\UniversalDevice\AsRock\MotherBoard\AsrCore.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Hardware\Devices\UniversalDevice\AsRock\MotherBoard\AsrHwm.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Hardware\Devices\UniversalDevice\AsRock\MotherBoard\AsrPolychromeSDK64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="MLs\Source\GenreModel.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
