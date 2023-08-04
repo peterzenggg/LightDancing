@@ -1,4 +1,5 @@
-﻿using LightDancing.Colors;
+﻿using Force.DeepCloner;
+using LightDancing.Colors;
 using LightDancing.Common;
 using LightDancing.Enums;
 using System;
@@ -6,6 +7,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using static LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard.ASRockLedController;
 
 namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 {
@@ -52,29 +55,117 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
     {
         LedStrip,
         Fan,
+        None,
     }
     public class ASRockMode
     {
-        ASRockType Type;
-        int SettingLed;
-        public ASRockMode(ASRockType Type)
+        public ASRockType Type;
+        public int SettingLed;
+        int ch;
+        int MaxLed;
+        public ASRockMode(int ch, ASRockType Type, int MaxLed, int SettingLed)
         {
+            this.ch = ch;
             this.Type = Type;
-            SettingLed = 0;
+            this.MaxLed = MaxLed;
+            this.SettingLed = SettingLed;
         }
-        public ASRockMode(ASRockType Type, int MaxLed)
+        public int GetChanel()
+        {
+            return ch;
+        }
+        public void ChangeType(ASRockType Type)
         {
             this.Type = Type;
-            this.SettingLed = MaxLed;
+        }
+
+        public void SetLed(int LedSet)
+        {
+            if (LedSet < MaxLed)
+            {
+                SettingLed = LedSet;
+            }
+            else
+            {
+                SettingLed = MaxLed;
+            }
+        }
+        public int GetMaxLed()
+        {
+            return MaxLed;
         }
     }
-    internal class AsRockLedController
+
+    internal class AsrockRGBChannel
+    {
+        bool Enable;
+        LightingBase LightBase;
+        ASRockMode mode;
+
+        public AsrockRGBChannel(int Channel, ASRLIB_ChannelConfig Config, bool Enable)
+        {
+            this.Enable = Enable;
+            if (Enable)
+            {
+                mode = new ASRockMode(Channel, ASRockType.LedStrip, Config.MaxLeds, Config.MaxLeds);
+            }
+        }
+
+        public ASRockMode GetMode()
+        {
+            if (Enable)
+            {
+                return mode;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public void ChangeMode()
+        {
+            if (Enable)
+            {
+                if (mode.Type == ASRockType.LedStrip)
+                {
+                    LightBase = new ASRockLedStrip(mode.SettingLed, mode.GetChanel());
+                }
+                else if (mode.Type == ASRockType.Fan)
+                {
+                    LightBase = new AsRockLightFan(mode.GetChanel());
+                }
+                else
+                {
+                    LightBase = null;
+                }
+            }
+        }
+
+        public LightingBase GetLightingBase()
+        {
+            if (Enable)
+            {
+                return LightBase;
+            }
+            return null;
+        }
+
+    }
+    public class ASRockLedController
     {
         List<AsrockRGBChannel> ChannelController;
-        HardwareModel model;
-        public AsRockLedController(List<ASRockMode> Setting)
+        List<ASRockMode> modeList;
+        public static HardwareModel smodel = new HardwareModel()
         {
+            FirmwareVersion = "NA",
+            Name = "",
+        };
+        public ASRockLedController(HardwareModel model)
+        {
+            smodel = model;
             ChannelController = new List<AsrockRGBChannel>();
+            modeList = new List<ASRockMode>();
             ASRLIB_ControllerInfo Info = new ASRLIB_ControllerInfo();
             DLL.Polychrome_GetLedControllerInfo(ref Info);
             List<ASRLIB_ChannelConfig> ChConfig = new List<ASRLIB_ChannelConfig>();
@@ -90,27 +181,45 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             {
                 bool enable = ((Info.ActiveChannel >> i) & 0x01) == 1;
                 AsrockRGBChannel ch = new AsrockRGBChannel(i, ChConfig[i], enable);
-                if(enable)
-                    ChannelController.Add(ch);
+                ChannelController.Add(ch);
             }
-
-        }
-        public void SetModel(HardwareModel model)
-        {
-            this.model = model;
-
-        }
-
-        public string GetMaxLed(int ch)
-        {
-            if (ChannelController.Count > ch)
+            foreach (AsrockRGBChannel ch in ChannelController)
             {
-                return ChannelController[ch].GetMaxLed().ToString();
+                ASRockMode mode = ch.GetMode();
+                if (mode != null)
+                {
+                    modeList.Add(ch.GetMode());
+                }
             }
-            else
+        }
+
+        public List<ASRockMode> GetModeDeepList()
+        {
+            List<ASRockMode> Result = new List<ASRockMode>();
+            foreach (ASRockMode mode in modeList)
             {
-                return "";
+                Result.Add(new ASRockMode(mode.GetChanel(), mode.Type, mode.GetMaxLed(), mode.SettingLed));
             }
+            return Result;
+        }
+        public List<ASRockMode> GetModeList()
+        {
+            return modeList;
+        }
+
+        public List<LightingBase> ChangeCommit()
+        {
+            List<LightingBase> Results = new List<LightingBase>();
+            foreach (AsrockRGBChannel ch in ChannelController)
+            {
+                ch.ChangeMode();
+                LightingBase Result = ch.GetLightingBase();
+                if (Result != null)
+                {
+                    Results.Add(Result);
+                }
+            }
+            return Results;
         }
 
 
@@ -124,6 +233,8 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         {
             return DLL.Polychrome_SDKInit();
         }
+
+        public void 
 
         #region DLL
         class DLL
@@ -170,39 +281,6 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         }
         #endregion
 
-        class AsrockRGBChannel
-        {
-            int Channel;
-            bool Enable;
-            int MaxLed;
-            LightingBase LightingBase;
-
-            public AsrockRGBChannel(int Channel, ASRLIB_ChannelConfig Config, bool Enable)
-            {
-                this.Channel = Channel;
-                this.Enable = Enable;
-                MaxLed = Config.MaxLeds;
-            }
-
-            public LightingBase GetLightingBase()
-            {
-                return LightingBase;
-            }
-
-            public void SetLightBase(LightingBase LightingBase)
-            {
-                this.LightingBase = LightingBase;
-            }
-
-            public int GetMaxLed()
-            {
-                return MaxLed;
-            }
-            public bool GetEnable()
-            {
-                return Enable;
-            }
-        }
 
         internal class ASRockLedStrip : LightingBase
         {
@@ -219,8 +297,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 
             private int ch;
 
-            List<ColorRGB> displayColors = new List<ColorRGB>();
-            public ASRockLedStrip(HardwareModel USBModel, int XCount, int ch) : base(KEYBOARD_YAXIS_COUNTS, XCount, USBModel)
+            public ASRockLedStrip(int XCount, int ch) : base(KEYBOARD_YAXIS_COUNTS, XCount, smodel)
             {
                 this.ch = ch;
                 _model = InitModel();
@@ -245,27 +322,32 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             }
             protected override void ProcessColor(ColorRGB[,] colorMatrix)
             {
-                displayColors.Clear();
+                List<byte> collectBytes = new List<byte>();
                 for (int i = 0; i < KEYBOARD_XAXIS_COUNTS; i++)
                 {
-                    displayColors.Add(colorMatrix[0, i]);
+                    ColorRGB colorRGB = colorMatrix[0,i];
+                    collectBytes.Add(colorRGB.R);
+                    collectBytes.Add(colorRGB.G);
+                    collectBytes.Add(colorRGB.B);
                 }
+                _displayColorBytes = collectBytes;
             }
             protected override void ProcessZoneSelection(Dictionary<Keyboard, ColorRGB> keyColors)
             {
             }
             protected override void TurnOffLed()
             {
-                displayColors.Clear();
+                _displayColorBytes.Clear();
                 for (int i = 0; i < KEYBOARD_XAXIS_COUNTS; i++)
                 {
-                    displayColors.Add(ColorRGB.Black());
+                    _displayColorBytes.Add(0x00);
+                    _displayColorBytes.Add(0x00);
+                    _displayColorBytes.Add(0x00);
                 }
-
             }
         }
 
-        internal class AsRockFan : LightingBase
+        internal class AsRockLightFan : LightingBase
         {
             /// <summary>
             /// The Y-Axis count of led board
@@ -279,10 +361,6 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             private const int KEYBOARD_XAXIS_COUNTS = 5;
 
             private int ch;
-
-
-            List<ColorRGB> displayColors = new List<ColorRGB>();
-
             private readonly Tuple<int, int>[] KEYS_LAYOUTS = new Tuple<int, int>[]
             {
                 Tuple.Create(2, 4),
@@ -294,7 +372,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                 Tuple.Create(0, 2),
                 Tuple.Create(1, 3),
             };
-            public AsRockFan(HardwareModel USBModel, int ch) : base(KEYBOARD_YAXIS_COUNTS, KEYBOARD_XAXIS_COUNTS, USBModel)
+            public AsRockLightFan(int ch) : base(KEYBOARD_YAXIS_COUNTS, KEYBOARD_XAXIS_COUNTS, smodel)
             {
                 this.ch = ch;
                 _model = InitModel();
@@ -317,11 +395,15 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             }
             protected override void ProcessColor(ColorRGB[,] colorMatrix)
             {
-                displayColors.Clear();
+                List<byte> collectBytes = new List<byte>();
                 foreach (Tuple<int, int> item in KEYS_LAYOUTS)
                 {
-                    displayColors.Add(colorMatrix[item.Item1, item.Item2]);
+                    ColorRGB colorRGB = colorMatrix[item.Item1, item.Item2];
+                    collectBytes.Add(colorRGB.R);
+                    collectBytes.Add(colorRGB.G);
+                    collectBytes.Add(colorRGB.B);
                 }
+                _displayColorBytes = collectBytes;
             }
             protected override void SetKeyLayout()
             {
@@ -330,11 +412,14 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 
             protected override void TurnOffLed()
             {
-                displayColors.Clear();
+                List<byte> collectBytes = new List<byte>();
                 foreach (Tuple<int, int> item in KEYS_LAYOUTS)
                 {
-                    displayColors.Add(ColorRGB.Black());
+                    collectBytes.Add(0x00);
+                    collectBytes.Add(0x00);
+                    collectBytes.Add(0x00);
                 }
+                _displayColorBytes = collectBytes;
             }
         }
 

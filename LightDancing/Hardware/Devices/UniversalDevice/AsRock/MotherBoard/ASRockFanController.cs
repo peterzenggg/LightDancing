@@ -124,8 +124,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             }
             WorkBool = true;
             StateThread = new Thread(TempGood) { IsBackground = true };
-            StateThread.Start();
-             
+            StateThread.Start(); 
         }
         public ASRockMotherBoardModel GetModel()
         {
@@ -168,7 +167,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                 Thread.Sleep(100);
             }
         }
-        public static bool InitFanFunction()
+        public static bool InitFunction()
         {
             return DLL.AsrLibDllInit();
         }

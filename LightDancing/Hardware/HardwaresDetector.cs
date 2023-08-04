@@ -176,8 +176,6 @@ namespace LightDancing.Hardware
                     {
                         List<USBDeviceBase> devices;
 
-                        //Stopwatch stopwatch = new Stopwatch();
-                        //stopwatch.Start();
                         if (control.GetType() == typeof(IBPMiniHubController))
                         {
                             devices = ((IBPMiniHubController)control).InitDevices(_port1Fans, _port1Leds, _port2Fans, _port2Leds, _port1FanSpeed, _port2FanSpeed);
@@ -186,8 +184,6 @@ namespace LightDancing.Hardware
                         {
                             devices = control.InitDevices();
                         }
-                        //stopwatch.Stop();
-                        //Console.WriteLine($"{control.GetType().FullName} InitDevice's time elapsed: {stopwatch.Elapsed}.");
 
                         if (devices != null)
                         {
