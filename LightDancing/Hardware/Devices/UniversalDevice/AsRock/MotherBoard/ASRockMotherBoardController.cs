@@ -43,7 +43,15 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         private static bool enableBool = false;
         private List<ASRockMode> nowModeList;
         private string name;
-        private List<ESCORE_FAN_ID> SettingList = new List<ESCORE_FAN_ID>();
+        private List<ESCORE_FAN_ID> SettingList = new List<ESCORE_FAN_ID>()
+        {
+            ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN1,
+            ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN2,
+            ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN1,
+            ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN2,
+            ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN3,
+            ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN4,
+        };
 
         public AsRockMotherBoard(string MotherBoardName) : base()
         {
@@ -64,14 +72,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         {
             List<FanGroup> result = new List<FanGroup>();
             List<FanBase> Fans = new List<FanBase>();
-            if (SettingList.Count == 0)
-            {
-                Fans = fanController.GetFullFans();
-            }
-            else
-            {
-                Fans = fanController.GetFanList(SettingList);
-            }
+            Fans = fanController.GetFanList(SettingList);
             foreach (FanBase Fb in Fans)
             {
                 FanGroup fan = new FanGroup();
