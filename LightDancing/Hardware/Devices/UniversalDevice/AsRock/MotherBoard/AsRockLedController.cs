@@ -34,6 +34,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         public ASRLIB_ChannelConfig ch6;
         public ASRLIB_ChannelConfig ch7;
     }
+
     public enum ASRLIB_ControllerType
     {
         RGB_CONTROLLER_MB = 0,
@@ -46,13 +47,13 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         public bool RGSwap;
     }
 
-
     public enum ASRockType
     {
         LedStrip,
         Fan,
         None,
     }
+
     public class ASRockMode
     {
         public ASRockType Type;
@@ -66,10 +67,12 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             this.maxLed = maxLed;
             this.SettingLed = settingLed;
         }
+
         public int GetChanel()
         {
             return ch;
         }
+
         public void ChangeType(ASRockType Type)
         {
             this.Type = Type;
@@ -86,19 +89,20 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                 SettingLed = maxLed;
             }
         }
+
         public int GetMaxLed()
         {
             return maxLed;
         }
     }
 
-    internal class AsrockRGBChannel
+    internal class ASrockRGBChannel
     {
         bool enable;
         LightingBase lightBase;
         ASRockMode mode;
 
-        public AsrockRGBChannel(int channel, ASRLIB_ChannelConfig config, bool enable)
+        public ASrockRGBChannel(int channel, ASRLIB_ChannelConfig config, bool enable)
         {
             this.enable = enable;
             if (enable)
@@ -150,7 +154,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
     }
     public class ASRockLedController
     {
-        private List<AsrockRGBChannel> channelController;
+        private List<ASrockRGBChannel> channelController;
         private List<ASRockMode> modeList;
         public static HardwareModel smodel = new HardwareModel()
         {
@@ -160,7 +164,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         public ASRockLedController(HardwareModel model)
         {
             smodel = model;
-            channelController = new List<AsrockRGBChannel>();
+            channelController = new List<ASrockRGBChannel>();
             modeList = new List<ASRockMode>();
             ASRLIB_ControllerInfo Info = new ASRLIB_ControllerInfo();
             DLL.Polychrome_GetLedControllerInfo(ref Info);
@@ -176,10 +180,10 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             for (int i = 0; i < ChConfig.Count; i++)
             {
                 bool enable = ((Info.ActiveChannel >> i) & 0x01) == 1;
-                AsrockRGBChannel ch = new AsrockRGBChannel(i, ChConfig[i], enable);
+                ASrockRGBChannel ch = new ASrockRGBChannel(i, ChConfig[i], enable);
                 channelController.Add(ch);
             }
-            foreach (AsrockRGBChannel ch in channelController)
+            foreach (ASrockRGBChannel ch in channelController)
             {
                 ASRockMode mode = ch.GetMode();
                 if (mode != null)
@@ -188,6 +192,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                 }
             }
         }
+
         public static uint Polychrome_SetLedColorConfig(uint ChannelId, ASRLIB_LedColor[] LedColor, uint LedSize)
         {
             return DLL.Polychrome_SetLedColorConfig(ChannelId, LedColor, LedSize, 100);
@@ -207,6 +212,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             }
             return Result;
         }
+
         public List<ASRockMode> GetModeList()
         {
             return modeList;
@@ -215,7 +221,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         public List<LightingBase> ChangeCommit()
         {
             List<LightingBase> results = new List<LightingBase>();
-            foreach (AsrockRGBChannel rGBChannel in channelController)
+            foreach (ASrockRGBChannel rGBChannel in channelController)
             {
                 rGBChannel.ChangeMode();
                 LightingBase result = rGBChannel.GetLightingBase();

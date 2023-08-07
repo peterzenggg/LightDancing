@@ -43,6 +43,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         private static bool enableBool = false;
         private List<ASRockMode> nowModeList;
         private string name;
+        private List<ESCORE_FAN_ID> SettingList = new List<ESCORE_FAN_ID>();
 
         public AsRockMotherBoard(string MotherBoardName) : base()
         {
@@ -53,9 +54,31 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             nowModeList = ledController.GetModeDeepList();
         }
 
-        public List<FanBase> GetFanList(List<ESCORE_FAN_ID> List)
+
+        public void SetFanList(List<ESCORE_FAN_ID> List)
         {
-            return fanController.GetFanList(List);
+            SettingList = List;
+        }
+
+        public List<FanGroup> GetFanGroups()
+        {
+            List<FanGroup> result = new List<FanGroup>();
+            List<FanBase> Fans = new List<FanBase>();
+            if (SettingList.Count == 0)
+            {
+                Fans = fanController.GetFullFans();
+            }
+            else
+            {
+                Fans = fanController.GetFanList(SettingList);
+            }
+            foreach (FanBase Fb in Fans)
+            {
+                FanGroup fan = new FanGroup();
+                fan.DeviceBases.Add(Fb);
+                result.Add(fan);
+            }
+            return result;
         }
 
         public ASRockMotherBoardModel GetTempMode()
@@ -67,6 +90,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         {
             return ledController.GetModeList();
         }
+
 
         protected override HardwareModel InitModel()
         {

@@ -233,6 +233,11 @@ namespace LightDancing.Hardware
                     {
                         _fanGroups.AddRange(((NP50Device)item).GetFanGroups());
                     }
+
+                    if (item.GetType() == typeof(AsRockMotherBoard))
+                    {
+                        _fanGroups.AddRange(((AsRockMotherBoard)item).GetFanGroups());
+                    }
                 }
 
                 _fanDevices.Clear();
@@ -712,25 +717,19 @@ namespace LightDancing.Hardware
             }
         }
 
-        public List<FanBase> GetAsRockFanControll(List<ESCORE_FAN_ID> IdList)
+        public void SetAsRockFanControll(List<ESCORE_FAN_ID> IdList)
         {
             if (_usbDevices != null && _usbDevices.Count > 0)
             {
                 int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
                 if (index >= 0)
                 {
-                    List<FanBase> Result = ((AsRockMotherBoard)_usbDevices[index]).GetFanList(IdList);
-                    return Result;
+                    ((AsRockMotherBoard)_usbDevices[index]).SetFanList(IdList);
                 }
                 else
                 {
                     Debug.WriteLine("Not Find AsRockMotherBoard Device");
-                    return null;
                 }
-            }
-            else
-            {
-                return null;
             }
         }
 

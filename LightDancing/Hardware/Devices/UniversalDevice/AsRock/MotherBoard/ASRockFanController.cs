@@ -24,6 +24,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         {
             this.ch = ch;
             this.config = config;
+            Name = ch.ToString();
         }
         public override int SpeedPercentage
         {
@@ -32,6 +33,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                 return Convert.ToInt16(CurrentRPM/ 255.0 * 100);
             }
         }
+
         public override void SetSpeed(int percentage)
         {
             int Target = 50;
@@ -48,6 +50,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         {
             Debug.WriteLine("Not Include SetRPM Function");
         }
+
     }
      public enum ESCORE_FAN_ID
     {
@@ -104,17 +107,16 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         bool SMART_FAN4_FanStop_Enabled;
     }
 
-
     internal class ASRockFanController
     {
         ASRockMotherBoardModel model;
-        List<ASRockFan> aSRockFans; 
+        List<FanBase> aSRockFans;
         bool workBool;
         Thread stateThread; 
         public ASRockFanController()
         {
             model = new ASRockMotherBoardModel();
-            aSRockFans = new List<ASRockFan>();
+            aSRockFans = new List<FanBase>();
             foreach (ESCORE_FAN_ID id in Enum.GetValues(typeof(ESCORE_FAN_ID)))
             {
                 SSCORE_FAN_CONFIG Config = new SSCORE_FAN_CONFIG();
@@ -131,12 +133,17 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             return model;
         }
 
+        public List<FanBase> GetFullFans()
+        {
+            return aSRockFans;
+        }
+
         public List<FanBase> GetFanList(List<ESCORE_FAN_ID> List)
         {
             List<FanBase> Result = new List<FanBase>();
             foreach (ESCORE_FAN_ID id in List)
             {
-                ASRockFan Fan = aSRockFans.FirstOrDefault(p => p.SerchID == id);
+                FanBase Fan = aSRockFans.FirstOrDefault(p => p.Name == id.ToString());
                 if (Fan != null)
                 {
                     Result.Add(Fan);
@@ -211,7 +218,6 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                         return AsrLibGetHardwareMonitor(Item, TempP);
                 }
             }
-
 
             public static bool GetAsrFanConfig(ESCORE_FAN_ID FanID, ref SSCORE_FAN_CONFIG Config)
             {
