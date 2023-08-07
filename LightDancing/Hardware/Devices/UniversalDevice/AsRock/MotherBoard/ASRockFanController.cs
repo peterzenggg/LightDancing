@@ -133,10 +133,10 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             return model;
         }
 
-        public List<FanBase> GetFullFans()
-        {
-            return aSRockFans;
-        }
+        //public List<FanBase> GetFullFans()
+        //{
+        //    return aSRockFans;
+        //}
 
         public List<FanBase> GetFanList(List<ESCORE_FAN_ID> List)
         {
