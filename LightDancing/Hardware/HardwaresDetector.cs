@@ -9,10 +9,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LightDancing.Hardware.Devices.UniversalDevice.Mountain;
+using LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard;
 using System.Diagnostics;
 using Windows.Devices.Usb;
 using LightDancing.Hardware.Devices.Fans;
 using System.Runtime.CompilerServices;
+using System.Collections;
+
 
 namespace LightDancing.Hardware
 {
@@ -709,6 +712,76 @@ namespace LightDancing.Hardware
             }
         }
 
+        public List<FanBase> GetAsRockFanControll(List<ESCORE_FAN_ID> IdList)
+        {
+            if (_usbDevices != null && _usbDevices.Count > 0)
+            {
+                int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
+                if (index >= 0)
+                {
+                    List<FanBase> Result = ((AsRockMotherBoard)_usbDevices[index]).GetFanList(IdList);
+                    return Result;
+                }
+                else
+                {
+                    Debug.WriteLine("Not Find AsRockMotherBoard Device");
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public ASRockMotherBoardModel GetMotherBoardTempModel()
+        {
+            if (_usbDevices != null && _usbDevices.Count > 0)
+            {
+                int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
+                if (index >= 0)
+                {
+                    ASRockMotherBoardModel Result = ((AsRockMotherBoard)_usbDevices[index]).GetTempMode();
+                    return Result;
+                }
+                else
+                {
+                    Debug.WriteLine("Not Find AsRockMotherBoard Device");
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public List<ASRockMode> GetASRockLedChList()
+        {
+            if (_usbDevices != null && _usbDevices.Count > 0)
+            {
+                int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
+                if (index >= 0)
+                {
+                    List<ASRockMode> Result = ((AsRockMotherBoard)_usbDevices[index]).GetLedControlList();
+                    return Result;
+                }
+                else
+                {
+                    Debug.WriteLine("Not Find AsRockMotherBoard Device");
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public void ApplyMotherBoardChChange()
+        {
+            DeviceList_Changed();
+        }
         /// <summary>
         /// Set mini hub fan speed
         /// </summary>

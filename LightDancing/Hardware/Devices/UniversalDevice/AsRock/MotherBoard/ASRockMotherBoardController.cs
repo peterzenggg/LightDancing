@@ -1,15 +1,13 @@
-﻿using System;
+﻿using LightDancing.Hardware.Devices.Fans;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.Xml.Linq;
 
 namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 {
     internal class ASRockMotherBoardController : ILightingControl
     {
         const string MOTHERBOARDNAME = "B760M Pro RS/D4";
-
 
         public List<USBDeviceBase> InitDevices()
         {
@@ -38,22 +36,36 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         }
     }
 
-
-    class AsRockMotherBoard: USBDeviceBase
+    class AsRockMotherBoard : USBDeviceBase
     {
-        static ASRockFanController FanController;
-        static ASRockLedController LedController;
-        static bool EnableBool = false;
-        List<ASRockMode> NowModeList;
-        string Name;
+        private static ASRockFanController fanController;
+        private static ASRockLedController ledController;
+        private static bool enableBool = false;
+        private List<ASRockMode> nowModeList;
+        private string name;
 
         public AsRockMotherBoard(string MotherBoardName) : base()
         {
-            Name = MotherBoardName;
+            name = MotherBoardName;
             _model = InitModel();
             Enable(_model);
             _lightingBase = InitDevice();
-            NowModeList = LedController.GetModeDeepList();
+            nowModeList = ledController.GetModeDeepList();
+        }
+
+        public List<FanBase> GetFanList(List<ESCORE_FAN_ID> List)
+        {
+            return fanController.GetFanList(List);
+        }
+
+        public ASRockMotherBoardModel GetTempMode()
+        {
+            return fanController.GetModel();
+        }
+
+        public List<ASRockMode> GetLedControlList()
+        {
+            return ledController.GetModeList();
         }
 
         protected override HardwareModel InitModel()
@@ -61,38 +73,48 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             return new HardwareModel()
             {
                 FirmwareVersion = "NA",
-                Name = Name
+                Name = name
             };
         }
 
         protected override List<LightingBase> InitDevice()
         {
-            return LedController.ChangeCommit();
+            return ledController.ChangeCommit();
         }
 
         protected override void SendToHardware(bool process, float brightness)
         {
+            uint result = 0;
             for (int i = 0; i < _lightingBase.Count; i++)
             {
-                ASRockMode NodeState = NowModeList[i];
-                LightingBase Base = _lightingBase[i];
-                Base.ProcessStreaming(false, brightness);
-                List<ASRLIB_LedColor> ResultCololr = GetColorList(Base.GetDisplayColors());
-                while (ResultCololr.Count < NodeState.GetMaxLed())
+                ASRockMode nodeState = nowModeList[i];
+                LightingBase lightBase = _lightingBase[i];
+                lightBase.ProcessStreaming(false, brightness);
+                List<ASRLIB_LedColor> resultCololr = GetColorList(lightBase.GetDisplayColors());
+                while (resultCololr.Count < nodeState.GetMaxLed())
                 {
-                    ResultCololr.Add(new ASRLIB_LedColor() { ColorR = 0x00, ColorG = 0x00, ColorB = 0x00 });
+                    resultCololr.Add(new ASRLIB_LedColor() { ColorR = 0x00, ColorG = 0x00, ColorB = 0x00 });
                 }
-
+                result = ASRockLedController.Polychrome_SetLedColorConfig(Convert.ToUInt32(nodeState.GetChanel()), resultCololr.ToArray(), Convert.ToUInt32(nodeState.GetMaxLed()));
+                if (result != 0)
+                {
+                    Debug.WriteLine("ASRockLedController.Polychrome_SetLedColorConfig Error");
+                }
+            }
+            result = ASRockLedController.Polychrome_SetLedColors();
+            if (result != 0)
+            {
+                Debug.WriteLine("ASRockLedController.Polychrome_SetLedColors Error");
             }
         }
 
-        public static void Enable(HardwareModel model)
+        private static void Enable(HardwareModel model)
         {
-            if (!EnableBool)
+            if (!enableBool)
             {
-                FanController = new ASRockFanController();
-                LedController = new ASRockLedController(model);
-                EnableBool = true;
+                fanController = new ASRockFanController();
+                ledController = new ASRockLedController(model);
+                enableBool = true;
             }
         }
 
