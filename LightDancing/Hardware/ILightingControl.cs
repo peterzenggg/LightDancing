@@ -14,6 +14,7 @@ using LightDancing.Hardware.Devices.UniversalDevice.Mountain;
 using System.Collections.Generic;
 using LightDancing.Hardware.Devices.UniversalDevice.ViewSonic.Monitor;
 using System;
+using LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard;
 
 namespace LightDancing.Hardware
 {
@@ -63,6 +64,7 @@ namespace LightDancing.Hardware
                 USBDevices.SuoaiKeebTKL => new SuoaiKeebTKLController(),
                 USBDevices.Q60 => new Q60Controller(),
                 USBDevices.CoyaLedStrip => new CoyaController(),
+                USBDevices.AsrockMotherBoard=>new ASRockMotherBoardController(),
                 _ => throw new Exception($"Not handle with {type}, please implement the controller with it."),
             };
 

@@ -44,7 +44,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
     public struct ASRLIB_ChannelConfig
     {
         public int MaxLeds;
-        public bool RGSwap;
+        public byte RGSwap;
     }
 
     public enum ASRockType
@@ -208,7 +208,8 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             List<ASRockMode> Result = new List<ASRockMode>();
             foreach (ASRockMode mode in modeList)
             {
-                Result.Add(new ASRockMode(mode.GetChanel(), mode.Type, mode.GetMaxLed(), mode.SettingLed));
+                if(mode.Type!= ASRockType.None)
+                    Result.Add(new ASRockMode(mode.GetChanel(), mode.Type, mode.GetMaxLed(), mode.SettingLed));
             }
             return Result;
         }
@@ -309,6 +310,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             public ASRockLedStrip(int XCount, int channel) : base(KEYBOARD_YAXIS_COUNTS, XCount, smodel)
             {
                 this.channel = channel;
+                KEYBOARD_XAXIS_COUNTS = XCount;
                 _model = InitModel();
             }
 
@@ -367,19 +369,27 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             /// The X-Axis count of led board
             /// </summary>
             /// </summary>
-            private const int KEYBOARD_XAXIS_COUNTS = 5;
+            private const int KEYBOARD_XAXIS_COUNTS = 4;
 
             private int channel;
             private readonly Tuple<int, int>[] KEYS_LAYOUTS = new Tuple<int, int>[]
             {
-                Tuple.Create(2, 4),
-                Tuple.Create(3, 3),
-                Tuple.Create(4, 2),
-                Tuple.Create(3, 1),
-                Tuple.Create(2, 0),
-                Tuple.Create(1, 1),
+                Tuple.Create(0, 3),
                 Tuple.Create(0, 2),
+                Tuple.Create(0, 1),
+                Tuple.Create(0, 0),
+                Tuple.Create(1, 0),
+                Tuple.Create(2, 0),
+                Tuple.Create(3, 0),
+                Tuple.Create(4, 0),
+                Tuple.Create(4, 1),
+                Tuple.Create(4, 2),
+                Tuple.Create(4, 3),
+                Tuple.Create(3, 3),
+                Tuple.Create(2, 3),
                 Tuple.Create(1, 3),
+                Tuple.Create(0, 3),
+                Tuple.Create(0, 3),
             };
             public AsRockLightFan(int channel) : base(KEYBOARD_YAXIS_COUNTS, KEYBOARD_XAXIS_COUNTS, smodel)
             {

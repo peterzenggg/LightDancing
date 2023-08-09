@@ -50,6 +50,7 @@
         RazerMambaElite,
         SuoaiKeebTKL,
         CoyaLedStrip,
+        AsrockMotherBoard,
     }
 
     public enum USBDevices
@@ -90,6 +91,7 @@
         RazerMambaElite,
         SuoaiKeebTKL,
         CoyaLedStrip,
+        AsrockMotherBoard,
     }
 
     public enum MiniHubLayout

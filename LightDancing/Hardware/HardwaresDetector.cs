@@ -59,6 +59,8 @@ namespace LightDancing.Hardware
 
         private HardwaresDetector()
         {
+
+            var c = System.Reflection.Assembly.GetEntryAssembly().Location;
             if (System.IO.Directory.Exists(STM32Directory.STM32_DIRECTORY_PATH))
             {
                 STM32_Setting = System.IO.File.Exists(STM32Directory.CLI_PATH);

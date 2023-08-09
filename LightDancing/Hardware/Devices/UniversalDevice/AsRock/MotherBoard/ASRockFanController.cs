@@ -11,13 +11,6 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 
     public class ASRockFan: FanBase
     {
-        public ESCORE_FAN_ID SerchID
-        {
-            get
-            {
-                return ch;
-            }
-        }
         ESCORE_FAN_ID ch;
         SSCORE_FAN_CONFIG config;
         public ASRockFan(ESCORE_FAN_ID ch, SSCORE_FAN_CONFIG config) :base()
@@ -104,7 +97,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         int SMART_FAN4_Speed4;
         int SMART_FAN4_Critical_Temp;
         int SMART_FAN4_Temp_Source;
-        bool SMART_FAN4_FanStop_Enabled;
+        int SMART_FAN4_FanStop_Enabled;
     }
 
     internal class ASRockFanController
@@ -132,11 +125,6 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         {
             return model;
         }
-
-        //public List<FanBase> GetFullFans()
-        //{
-        //    return aSRockFans;
-        //}
 
         public List<FanBase> GetFanList(List<ESCORE_FAN_ID> List)
         {

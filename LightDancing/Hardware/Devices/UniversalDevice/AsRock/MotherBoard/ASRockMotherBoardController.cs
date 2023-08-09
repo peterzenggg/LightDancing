@@ -41,9 +41,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         private static ASRockFanController fanController;
         private static ASRockLedController ledController;
         private static bool enableBool = false;
-        private List<ASRockMode> nowModeList;
-        private string name;
-        private List<ESCORE_FAN_ID> SettingList = new List<ESCORE_FAN_ID>()
+        private static List<ESCORE_FAN_ID> SettingList = new List<ESCORE_FAN_ID>()
         {
             ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN1,
             ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN2,
@@ -52,7 +50,8 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN3,
             ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN4,
         };
-
+        private List<ASRockMode> nowModeList;
+        private string name;
         public AsRockMotherBoard(string MotherBoardName) : base()
         {
             name = MotherBoardName;
@@ -146,8 +145,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         private List<ASRLIB_LedColor> GetColorList(List<byte> byteList)
         {
             List<ASRLIB_LedColor> Results = new List<ASRLIB_LedColor>();
-            int count = byteList.Count / 3;
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < byteList.Count; i+=3)
             {
                 Results.Add(new ASRLIB_LedColor() { ColorR = byteList[i], ColorG = byteList[i + 1], ColorB = byteList[i + 2] });
             }
