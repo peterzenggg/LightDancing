@@ -44,6 +44,10 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             Debug.WriteLine("Not Include SetRPM Function");
         }
 
+        public void BackToSmart()
+        {
+        }
+
     }
      public enum ESCORE_FAN_ID
     {
@@ -139,7 +143,12 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             }
             return Result;
         }
-        
+
+        private void BackToFW()
+        {
+            
+        }
+
         private void TempGood()
         {
             double value = 0;

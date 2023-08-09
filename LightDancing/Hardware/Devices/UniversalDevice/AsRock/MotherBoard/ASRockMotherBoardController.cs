@@ -106,6 +106,11 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             return ledController.ChangeCommit();
         }
 
+        public override void TurnFwAnimationOn()
+        {
+
+        }
+
         protected override void SendToHardware(bool process, float brightness)
         {
             uint result = 0;
