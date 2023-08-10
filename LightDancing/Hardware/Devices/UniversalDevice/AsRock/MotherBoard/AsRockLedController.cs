@@ -3,6 +3,7 @@ using LightDancing.Common;
 using LightDancing.Enums;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Joins;
 using System.Runtime.InteropServices;
 using static LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard.ASRockLedController;
 
@@ -45,6 +46,17 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
     {
         public int MaxLeds;
         public byte RGSwap;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ASRLIB_LedPattern
+    {
+        public byte PatternId;
+        public byte ColorR;
+        public byte ColorG;
+        public byte ColorB;
+        public byte Speed;    // 0 ~ 255 (Fast ~ Slow) Only for Asrock MB.
+        public byte ApplyAll;			// Only for Asrock MB.
     }
 
     public enum ASRockType
@@ -189,6 +201,14 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                 if (mode != null)
                 {
                     modeList.Add(ch.GetMode());
+                    ASRLIB_LedPattern Patten = new ASRLIB_LedPattern();
+                    uint result = DLL.Polychrome_GetLedPattern((uint)mode.GetChanel(), ref Patten);
+                    Patten.PatternId = 0x01;
+                    Patten.ColorR = 255;
+                    Patten.ColorG = 255;
+                    Patten.ColorB = 255;
+                    Patten.ApplyAll = 1;
+                    result = DLL.Polychrome_SetLedPattern((uint)mode.GetChanel(), ref Patten);
                 }
             }
         }
@@ -266,6 +286,12 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             public static extern unsafe uint Polychrome_SetLedColorConfig();
 
             [DllImport(DLL_PATH, CallingConvention = CallingConvention.Cdecl)]
+            public static extern unsafe uint Polychrome_GetLedPattern(uint ChannelId, ASRLIB_LedPattern* LedPattern);
+
+            [DllImport(DLL_PATH, CallingConvention = CallingConvention.Cdecl)]
+            public static extern unsafe uint Polychrome_SetLedPattern(uint ChannelId, ASRLIB_LedPattern* LedPattern);
+
+            [DllImport(DLL_PATH, CallingConvention = CallingConvention.Cdecl)]
             public static extern uint Polychrome_SetLedColors();
 
             [DllImport(DLL_PATH, CallingConvention = CallingConvention.Cdecl)]
@@ -287,6 +313,28 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                     }
                 }
 
+            }
+
+            public static uint Polychrome_GetLedPattern(uint ChannelId, ref ASRLIB_LedPattern LedPattern)
+            {
+                unsafe
+                {
+                    fixed (ASRLIB_LedPattern* Pattenp = &LedPattern)
+                    {
+                        return Polychrome_GetLedPattern(ChannelId, Pattenp);
+                    }
+                }
+            }
+
+            public static uint Polychrome_SetLedPattern(uint ChannelId, ref ASRLIB_LedPattern LedPattern)
+            {
+                unsafe
+                {
+                    fixed (ASRLIB_LedPattern* Pattenp = &LedPattern)
+                    {
+                        return Polychrome_SetLedPattern(ChannelId, Pattenp);
+                    }
+                }
             }
         }
         #endregion
