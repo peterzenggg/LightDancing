@@ -394,15 +394,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Hardware\Devices\UniversalDevice\AsRock\MotherBoard\AsrCore.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Hardware\Devices\UniversalDevice\AsRock\MotherBoard\AsrHwm.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Hardware\Devices\UniversalDevice\AsRock\MotherBoard\AsrPolychromeSDK64.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="MLs\Source\GenreModel.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
