@@ -75,7 +75,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                                 AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_FAN1_SPEED, ref value);
                                 break;
                             case ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN2:
-                                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_FAN1_SPEED, ref value);
+                                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_FAN2_SPEED, ref value);
                                 break;
                             case ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN1:
                                 AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN1_SPEED, ref value);
