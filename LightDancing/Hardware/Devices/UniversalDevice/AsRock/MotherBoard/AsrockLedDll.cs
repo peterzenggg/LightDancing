@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Runtime.InteropServices;
 
 namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 {
@@ -62,7 +59,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         None,
     }
 
-    internal class AsrockLedDll
+    internal class ASRockLedDll
     {
         private const string DLL_PATH = @"AsrPolychromeSDK64.dll";
 
@@ -98,35 +95,35 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         [DllImport(DLL_PATH, CallingConvention = CallingConvention.Cdecl)]
         public static extern uint Polychrome_SetLedColorConfig(uint ChannelId, ASRLIB_LedColor[] LedColor, uint LedSize, uint Brightness);
 
-        public static uint Polychrome_GetLedControllerInfo(ref ASRLIB_ControllerInfo Info)
+        public static uint Polychrome_GetLedControllerInfo(ref ASRLIB_ControllerInfo info)
         {
             unsafe
             {
-                fixed (ASRLIB_ControllerInfo* InfoPointer = &Info)
+                fixed (ASRLIB_ControllerInfo* infoPointer = &info)
                 {
-                    return Polychrome_GetLedControllerInfo(InfoPointer);
+                    return Polychrome_GetLedControllerInfo(infoPointer);
                 }
             }
         }
 
-        public static uint Polychrome_GetLedPattern(uint ChannelId, ref ASRLIB_LedPattern LedPattern)
+        public static uint Polychrome_GetLedPattern(uint channelId, ref ASRLIB_LedPattern ledPattern)
         {
             unsafe
             {
-                fixed (ASRLIB_LedPattern* PatternPointer = &LedPattern)
+                fixed (ASRLIB_LedPattern* patternPointer = &ledPattern)
                 {
-                    return Polychrome_GetLedPattern(ChannelId, PatternPointer);
+                    return Polychrome_GetLedPattern(channelId, patternPointer);
                 }
             }
         }
 
-        public static uint Polychrome_SetLedPattern(uint ChannelId, ref ASRLIB_LedPattern LedPattern)
+        public static uint Polychrome_SetLedPattern(uint channelId, ref ASRLIB_LedPattern ledPattern)
         {
             unsafe
             {
-                fixed (ASRLIB_LedPattern* PatternPointer = &LedPattern)
+                fixed (ASRLIB_LedPattern* patternPointer = &ledPattern)
                 {
-                    return Polychrome_SetLedPattern(ChannelId, PatternPointer);
+                    return Polychrome_SetLedPattern(channelId, patternPointer);
                 }
             }
         }

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace LightDancing.Hardware.Devices.Components
 {
-    internal class AsrockLedStrip : LightingBase
+    internal class ASRockLedStrip : LightingBase
     {
         /// <summary>
         /// The Y-Axis count of led board
@@ -17,14 +17,14 @@ namespace LightDancing.Hardware.Devices.Components
         /// The X-Axis count of led board
         /// </summary>
         /// </summary>
-        private int KEYBOARD_XAXIS_COUNTS;
+        private readonly int _KeyboardXaxisCounts;
 
-        private int channel;
+        private readonly int _channel;
 
-        public AsrockLedStrip(int XCount, int channel, HardwareModel usbModel) : base(KEYBOARD_YAXIS_COUNTS, XCount, usbModel)
+        public ASRockLedStrip(int XCount, int channel, HardwareModel usbModel) : base(KEYBOARD_YAXIS_COUNTS, XCount, usbModel)
         {
-            this.channel = channel;
-            KEYBOARD_XAXIS_COUNTS = XCount;
+            _channel = channel;
+            _KeyboardXaxisCounts = XCount;
             _model = InitModel();
         }
 
@@ -33,12 +33,12 @@ namespace LightDancing.Hardware.Devices.Components
             SetKeyLayout();
             return new LightingModel()
             {
-                Layouts = new MatrixLayouts() { Width = KEYBOARD_XAXIS_COUNTS, Height = KEYBOARD_YAXIS_COUNTS },
+                Layouts = new MatrixLayouts() { Width = _KeyboardXaxisCounts, Height = KEYBOARD_YAXIS_COUNTS },
                 FirmwareVersion = _usbModel.FirmwareVersion,
-                DeviceID = _usbModel.DeviceID + channel,
+                DeviceID = _usbModel.DeviceID + _channel,
                 USBDeviceType = _usbModel.USBDeviceType,
                 Type = LightingDevices.SmartLedStrip,
-                Name = "LedStrip" + KEYBOARD_XAXIS_COUNTS,
+                Name = "LedStrip" + _KeyboardXaxisCounts,
             };
         }
 
@@ -50,7 +50,7 @@ namespace LightDancing.Hardware.Devices.Components
         protected override void ProcessColor(ColorRGB[,] colorMatrix)
         {
             List<byte> collectBytes = new List<byte>();
-            for (int i = 0; i < KEYBOARD_XAXIS_COUNTS; i++)
+            for (int i = 0; i < _KeyboardXaxisCounts; i++)
             {
                 ColorRGB colorRGB = colorMatrix[0, i];
                 collectBytes.Add(colorRGB.R);
@@ -67,7 +67,7 @@ namespace LightDancing.Hardware.Devices.Components
         protected override void TurnOffLed()
         {
             _displayColorBytes.Clear();
-            for (int i = 0; i < KEYBOARD_XAXIS_COUNTS; i++)
+            for (int i = 0; i < _KeyboardXaxisCounts; i++)
             {
                 _displayColorBytes.Add(0x00);
                 _displayColorBytes.Add(0x00);
@@ -77,7 +77,7 @@ namespace LightDancing.Hardware.Devices.Components
 
     }
 
-    public class AsrockLightFan : LightingBase
+    public class ASRockLightFan : LightingBase
     {
         /// <summary>
         /// The Y-Axis count of led board
@@ -89,8 +89,7 @@ namespace LightDancing.Hardware.Devices.Components
         /// </summary>
         /// </summary>
         private const int KEYBOARD_XAXIS_COUNTS = 4;
-
-        private int channel;
+        private readonly int _channel;
         private readonly Tuple<int, int>[] KEYS_LAYOUTS = new Tuple<int, int>[]
         {
                 Tuple.Create(0, 3),
@@ -111,9 +110,9 @@ namespace LightDancing.Hardware.Devices.Components
                 Tuple.Create(0, 3),
         };
 
-        public AsrockLightFan(int channel, HardwareModel usbModel) : base(KEYBOARD_YAXIS_COUNTS, KEYBOARD_XAXIS_COUNTS, usbModel)
+        public ASRockLightFan(int channel, HardwareModel usbModel) : base(KEYBOARD_YAXIS_COUNTS, KEYBOARD_XAXIS_COUNTS, usbModel)
         {
-            this.channel = channel;
+            _channel = channel;
             _model = InitModel();
         }
 
@@ -124,10 +123,10 @@ namespace LightDancing.Hardware.Devices.Components
             {
                 Layouts = new MatrixLayouts() { Width = KEYBOARD_XAXIS_COUNTS, Height = KEYBOARD_YAXIS_COUNTS },
                 FirmwareVersion = _usbModel.FirmwareVersion,
-                DeviceID = _usbModel.DeviceID + channel,
+                DeviceID = _usbModel.DeviceID + _channel,
                 USBDeviceType = _usbModel.USBDeviceType,
                 Type = LightingDevices.SmartLedStrip,
-                Name = "Fan" + channel,
+                Name = "Fan" + _channel,
             };
         }
 

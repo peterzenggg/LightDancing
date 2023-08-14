@@ -15,7 +15,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 
     internal class ASRockFanController
     {
-        private ASRockMotherBoardModel _model;
+        private readonly ASRockMotherBoardModel _model;
         private List<FanBase> _aSRockUsingFans;
         private bool _workBool;
         private Thread _stateThread;
@@ -40,7 +40,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             foreach (ESCORE_FAN_ID fanID in usingList)
             {
                 SSCORE_FAN_CONFIG config = new SSCORE_FAN_CONFIG();
-                AsrockFanDll.GetAsrFanConfig(fanID, ref config);
+                ASRockFanDll.GetAsrFanConfig(fanID, ref config);
                 _aSRockUsingFans.Add(new ASRockFan(fanID, config));
             }
             _workBool = true;
@@ -51,9 +51,9 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 
         public void TurnBackToFW()
         {
-            foreach (ASRockFan Fan in _aSRockUsingFans)
+            foreach (ASRockFan fan in _aSRockUsingFans)
             {
-                Fan.BackToFW();
+                fan.BackToFW();
             }
         }
 
@@ -62,8 +62,8 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             double value = 0;
             while (_workBool)
             {
-                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_TEMP, ref _model.CPUTemperature);
-                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_MB_TEMP, ref _model.MBTemperature);
+                ASRockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_TEMP, ref _model.CPUTemperature);
+                ASRockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_MB_TEMP, ref _model.MBTemperature);
                 foreach (ESCORE_FAN_ID fanID in Enum.GetValues(typeof(ESCORE_FAN_ID)))
                 {
                     FanBase baseFan = _aSRockUsingFans.FirstOrDefault(p => p.Name == fanID.ToString());
@@ -72,22 +72,22 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                         switch (fanID)
                         {
                             case ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN1:
-                                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_FAN1_SPEED, ref value);
+                                ASRockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_FAN1_SPEED, ref value);
                                 break;
                             case ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN2:
-                                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_FAN2_SPEED, ref value);
+                                ASRockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_FAN2_SPEED, ref value);
                                 break;
                             case ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN1:
-                                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN1_SPEED, ref value);
+                                ASRockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN1_SPEED, ref value);
                                 break;
                             case ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN2:
-                                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN2_SPEED, ref value);
+                                ASRockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN2_SPEED, ref value);
                                 break;
                             case ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN3:
-                                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN3_SPEED, ref value);
+                                ASRockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN3_SPEED, ref value);
                                 break;
                             case ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN4:
-                                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN4_SPEED, ref value);
+                                ASRockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN4_SPEED, ref value);
                                 break;
                         }
                         baseFan.CurrentRPM = Convert.ToInt16(value);
@@ -99,14 +99,15 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 
         public static bool InitFunction()
         {
-            return AsrockFanDll.AsrLibDllInit();
+            return ASRockFanDll.AsrLibDllInit();
         }
 
         public void Dispose()
         {
             _workBool = false;
             _stateThread.Join();
-            AsrockFanDll.AsrLibDllUnInit();
+            ASRockFanDll.AsrLibDllUnInit();
         }
+
     }
 }

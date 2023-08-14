@@ -23,6 +23,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         ESCORE_HWM_CHASSIS_FAN3_SPEED,
         ESCORE_HWM_CHASSIS_FAN4_SPEED,
     }
+
     public enum ESCORE_FAN_CONTROL_TYPE
     {
         ESCORE_FANCTL_MANUAL,
@@ -51,7 +52,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         public int SMART_FAN4_FanStop_Enabled;
     }
 
-    internal class AsrockFanDll
+    internal class ASRockFanDll
     {
         private const string DLL_PATH = @"AsrCore.dll";
 
@@ -65,7 +66,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         public static extern int AsrLibDllGetLastError();
 
         [DllImport(DLL_PATH)]
-        public static extern unsafe bool AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM Item, double* temp);
+        public static extern unsafe bool AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM item, double* temp);
 
         [DllImport(DLL_PATH, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe bool AsrLibGetFanConfig(ESCORE_FAN_ID FanId, SSCORE_FAN_CONFIG* Config);
@@ -73,32 +74,32 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         [DllImport(DLL_PATH, CallingConvention = CallingConvention.Cdecl)]
         public static extern unsafe bool AsrLibSetFanConfig(ESCORE_FAN_ID FanId, SSCORE_FAN_CONFIG* Config);
 
-        public static bool AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM Item, ref double temp)
+        public static bool AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM item, ref double temp)
         {
             unsafe
             {
-                fixed (double* TempP = &temp)
-                    return AsrLibGetHardwareMonitor(Item, TempP);
+                fixed (double* tempPointer = &temp)
+                    return AsrLibGetHardwareMonitor(item, tempPointer);
             }
         }
 
-        public static bool GetAsrFanConfig(ESCORE_FAN_ID FanID, ref SSCORE_FAN_CONFIG Config)
+        public static bool GetAsrFanConfig(ESCORE_FAN_ID fanID, ref SSCORE_FAN_CONFIG config)
         {
             unsafe
             {
-                fixed (SSCORE_FAN_CONFIG* ConfigP = &Config)
-                    return AsrLibGetFanConfig(FanID, ConfigP);
+                fixed (SSCORE_FAN_CONFIG* configPointer = &config)
+                    return AsrLibGetFanConfig(fanID, configPointer);
             }
         }
 
-        public static bool SetASRockFanConfig(ESCORE_FAN_ID FanID, SSCORE_FAN_CONFIG Config)
+        public static bool SetASRockFanConfig(ESCORE_FAN_ID fanID, SSCORE_FAN_CONFIG config)
         {
             unsafe
             {
-                SSCORE_FAN_CONFIG* ConfigP = &Config;
-                return AsrLibSetFanConfig(FanID, ConfigP);
+                SSCORE_FAN_CONFIG* configPointer = &config;
+                return AsrLibSetFanConfig(fanID, configPointer);
             }
         }
+
     }
-
 }

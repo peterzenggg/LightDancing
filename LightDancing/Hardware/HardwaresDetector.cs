@@ -735,7 +735,7 @@ namespace LightDancing.Hardware
             }
         }
 
-        public void SetASRockLedModeList(List<AsrockMode> settingList)
+        public void SetASRockLedModeList(List<ASRockMode> settingList)
         {
             if (_usbDevices != null && _usbDevices.Count > 0)
             {
@@ -773,14 +773,14 @@ namespace LightDancing.Hardware
             }
         }
 
-        public List<AsrockMode> GetASRockLedChList()
+        public List<ASRockMode> GetASRockLedChList()
         {
             if (_usbDevices != null && _usbDevices.Count > 0)
             {
                 int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
                 if (index >= 0)
                 {
-                    List<AsrockMode> result = ((AsRockMotherBoard)_usbDevices[index]).GetLedControlList();
+                    List<ASRockMode> result = ((AsRockMotherBoard)_usbDevices[index]).GetLedControlList();
                     return result;
                 }
                 else

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 {
-    public class AsrockMode
+    public class ASRockMode
     {
         private ASRockType _type;
         public ASRockType Type
@@ -17,6 +17,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                 _type = value;
             }
         }
+
         public int SettingLed
         {
             get
@@ -35,8 +36,9 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                 }
             }
         }
+
         private int _settingLed;
-        private int _channel;
+        private readonly int _channel;
         public int Channel
         {
             get
@@ -44,7 +46,8 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                 return _channel;
             }
         }
-        private int _maxLed;
+
+        private readonly int _maxLed;
         public int MaxLed
         {
             get
@@ -53,7 +56,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             }
         }
 
-        public AsrockMode(int channel, ASRockType type, int maxLed, int settingLed)
+        public ASRockMode(int channel, ASRockType type, int maxLed, int settingLed)
         {
             _channel = channel;
             _maxLed = maxLed;
@@ -63,17 +66,17 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 
     }
 
-    internal class AsrockRGBChannel
+    internal class ASRockRGBChannel
     {
+        private readonly ASRockMode _mode;
         private LightingBase _lightBase;
-        private AsrockMode _mode;
 
-        public AsrockRGBChannel(int channel, ASRLIB_ChannelConfig config)
+        public ASRockRGBChannel(int channel, ASRLIB_ChannelConfig config)
         {
-            _mode = new AsrockMode(channel, ASRockType.LedStrip, config.MaxLeds, config.MaxLeds);
+            _mode = new ASRockMode(channel, ASRockType.LedStrip, config.MaxLeds, config.MaxLeds);
         }
 
-        public AsrockMode GetMode()
+        public ASRockMode GetMode()
         {
             return _mode;
         }
@@ -83,10 +86,10 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             switch (_mode.Type)
             {
                 case ASRockType.LedStrip:
-                    _lightBase = new AsrockLedStrip(_mode.SettingLed, _mode.Channel, usbModel);
+                    _lightBase = new ASRockLedStrip(_mode.SettingLed, _mode.Channel, usbModel);
                     break;
                 case ASRockType.Fan:
-                    _lightBase = new AsrockLightFan(_mode.Channel, usbModel);
+                    _lightBase = new ASRockLightFan(_mode.Channel, usbModel);
                     break;
                 default:
                     _lightBase = null;
@@ -101,57 +104,59 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 
     }
 
-    public class AsrockLedController
+    public class ASRockLedController
     {
-        private readonly List<AsrockRGBChannel> _channelController;
+        private readonly List<ASRockRGBChannel> _channelController;
         private readonly HardwareModel _model;
-        private List<AsrockMode> _modeList;
+        private List<ASRockMode> _modeList;
 
-        public AsrockLedController(HardwareModel model)
+        public ASRockLedController(HardwareModel model)
         {
-            _channelController = new List<AsrockRGBChannel>();
-            _modeList = new List<AsrockMode>();
+            _channelController = new List<ASRockRGBChannel>();
+            _modeList = new List<ASRockMode>();
             _model = model;
             ASRLIB_ControllerInfo info = new ASRLIB_ControllerInfo();
-            AsrockLedDll.Polychrome_GetLedControllerInfo(ref info);
-            List<ASRLIB_ChannelConfig> channelConfigs = new List<ASRLIB_ChannelConfig>();
-            channelConfigs.Add(info.ch0);
-            channelConfigs.Add(info.ch1);
-            channelConfigs.Add(info.ch2);
-            channelConfigs.Add(info.ch3);
-            channelConfigs.Add(info.ch4);
-            channelConfigs.Add(info.ch5);
-            channelConfigs.Add(info.ch6);
-            channelConfigs.Add(info.ch7);
+            ASRockLedDll.Polychrome_GetLedControllerInfo(ref info);
+            List<ASRLIB_ChannelConfig> channelConfigs = new List<ASRLIB_ChannelConfig>
+            {
+                info.ch0,
+                info.ch1,
+                info.ch2,
+                info.ch3,
+                info.ch4,
+                info.ch5,
+                info.ch6,
+                info.ch7
+            };
             for (int i = 0; i < channelConfigs.Count; i++)
             {
                 bool enable = ((info.ActiveChannel >> i) & 0x01) == 1;
                 if (enable)
                 {
-                    AsrockRGBChannel channel = new AsrockRGBChannel(i, channelConfigs[i]);
+                    ASRockRGBChannel channel = new ASRockRGBChannel(i, channelConfigs[i]);
                     _channelController.Add(channel);
                     _modeList.Add(channel.GetMode());
                 }
             }
         }
 
-        public List<AsrockMode> GetModeDeepList()
+        public List<ASRockMode> GetModeDeepList()
         {
-            List<AsrockMode> result = new List<AsrockMode>();
-            foreach (AsrockMode mode in _modeList)
+            List<ASRockMode> result = new List<ASRockMode>();
+            foreach (ASRockMode mode in _modeList)
             {
                 if (mode.Type != ASRockType.None)
-                    result.Add(new AsrockMode(mode.Channel, mode.Type, mode.MaxLed, mode.SettingLed));
+                    result.Add(new ASRockMode(mode.Channel, mode.Type, mode.MaxLed, mode.SettingLed));
             }
             return result;
         }
 
-        public List<AsrockMode> GetModeList()
+        public List<ASRockMode> GetModeList()
         {
             return _modeList;
         }
 
-        public void SetModeList(List<AsrockMode> settingList)
+        public void SetModeList(List<ASRockMode> settingList)
         {
             _modeList = settingList;
         }
@@ -159,7 +164,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         public List<LightingBase> ChangeCommit()
         {
             List<LightingBase> results = new List<LightingBase>();
-            foreach (AsrockRGBChannel rGBChannel in _channelController)
+            foreach (ASRockRGBChannel rGBChannel in _channelController)
             {
                 rGBChannel.ChangeMode(_model);
                 LightingBase result = rGBChannel.GetLightingBase();
@@ -176,28 +181,28 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             ASRLIB_LedPattern pattern = new ASRLIB_LedPattern();
             pattern.PatternId = 0x0E;
             pattern.ApplyAll = 1;
-            AsrockLedDll.Polychrome_SetLedPattern(0, ref pattern);
+            ASRockLedDll.Polychrome_SetLedPattern(0, ref pattern);
         }
 
         public void Dispose()
         {
             //DLL.Polychrome_BackToDefault();
-            AsrockLedDll.Polychrome_SDKRelease();
+            ASRockLedDll.Polychrome_SDKRelease();
         }
 
         public static uint InitFunction()
         {
-            return AsrockLedDll.Polychrome_SDKInit();
+            return ASRockLedDll.Polychrome_SDKInit();
         }
 
         public static uint Polychrome_SetLedColorConfig(uint ChannelId, ASRLIB_LedColor[] LedColor, uint LedSize)
         {
-            return AsrockLedDll.Polychrome_SetLedColorConfig(ChannelId, LedColor, LedSize, 100);
+            return ASRockLedDll.Polychrome_SetLedColorConfig(ChannelId, LedColor, LedSize, 100);
         }
 
         public static uint Polychrome_SetLedColors()
         {
-            return AsrockLedDll.Polychrome_SetLedColors();
+            return ASRockLedDll.Polychrome_SetLedColors();
         }
 
     }
