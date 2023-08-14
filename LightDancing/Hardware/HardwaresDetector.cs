@@ -735,14 +735,14 @@ namespace LightDancing.Hardware
             }
         }
 
-        public ASRockMotherBoardModel GetMotherBoardTempModel()
+        public AsrockMotherBoardModel GetMotherBoardTempModel()
         {
             if (_usbDevices != null && _usbDevices.Count > 0)
             {
                 int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
                 if (index >= 0)
                 {
-                    ASRockMotherBoardModel Result = ((AsRockMotherBoard)_usbDevices[index]).GetTempMode();
+                    AsrockMotherBoardModel Result = ((AsRockMotherBoard)_usbDevices[index]).GetTempMode();
                     return Result;
                 }
                 else
@@ -757,14 +757,14 @@ namespace LightDancing.Hardware
             }
         }
 
-        public List<ASRockMode> GetASRockLedChList()
+        public List<AsrockMode> GetASRockLedChList()
         {
             if (_usbDevices != null && _usbDevices.Count > 0)
             {
                 int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
                 if (index >= 0)
                 {
-                    List<ASRockMode> Result = ((AsRockMotherBoard)_usbDevices[index]).GetLedControlList();
+                    List<AsrockMode> Result = ((AsRockMotherBoard)_usbDevices[index]).GetLedControlList();
                     return Result;
                 }
                 else
