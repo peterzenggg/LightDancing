@@ -7,70 +7,69 @@ using LightDancing.Hardware.Devices.Components;
 
 namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
 {
-    public class AsrockMotherBoardModel
+    public class ASRockMotherBoardModel
     {
-        public double CpuTemp;
-        public double MBTemp;
+        public double CPUTemperature;
+        public double MBTemperature;
     }
 
-    internal class AsrockFanController
+    internal class ASRockFanController
     {
-        AsrockMotherBoardModel model;
-        List<FanBase> aSRockUsingFans;
-        bool workBool;
-        Thread stateThread;
-        public AsrockFanController()
+        private ASRockMotherBoardModel _model;
+        private List<FanBase> _aSRockUsingFans;
+        private bool _workBool;
+        private Thread _stateThread;
+        public ASRockFanController()
         {
-            model = new AsrockMotherBoardModel();
+            _model = new ASRockMotherBoardModel();
         }
 
-        public AsrockMotherBoardModel GetModel()
+        public ASRockMotherBoardModel GetModel()
         {
-            return model;
+            return _model;
         }
 
-        public List<FanBase> GetFanList(List<ESCORE_FAN_ID> List)
+        public List<FanBase> GetFanList(List<ESCORE_FAN_ID> usingList)
         {
-            if(workBool)
+            if (_workBool)
             {
-                workBool = false;
-                stateThread.Join();
+                _workBool = false;
+                _stateThread.Join();
             }
-            aSRockUsingFans = new List<FanBase>();
-            foreach (ESCORE_FAN_ID id in List)
+            _aSRockUsingFans = new List<FanBase>();
+            foreach (ESCORE_FAN_ID fanID in usingList)
             {
-                SSCORE_FAN_CONFIG Config = new SSCORE_FAN_CONFIG();
-                AsrockFanDll.GetAsrFanConfig(id, ref Config);
-                FanBase Fan = new ASRockFan(id, Config);
-                aSRockUsingFans.Add(Fan);
+                SSCORE_FAN_CONFIG config = new SSCORE_FAN_CONFIG();
+                AsrockFanDll.GetAsrFanConfig(fanID, ref config);
+                _aSRockUsingFans.Add(new ASRockFan(fanID, config));
             }
-            workBool = true;
-            stateThread = new Thread(new ThreadStart(getBoardStausFunction)) { IsBackground = true };
-            stateThread.Start();
-            return aSRockUsingFans;
+            _workBool = true;
+            _stateThread = new Thread(new ThreadStart(GetBoardStausFunction)) { IsBackground = true };
+            _stateThread.Start();
+            return _aSRockUsingFans;
         }
 
         public void TurnBackToFW()
         {
-            foreach (ASRockFan Fan in aSRockUsingFans)
+            foreach (ASRockFan Fan in _aSRockUsingFans)
             {
                 Fan.BackToFW();
             }
         }
 
-        private void getBoardStausFunction()
+        private void GetBoardStausFunction()
         {
             double value = 0;
-            while (workBool)
+            while (_workBool)
             {
-                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_TEMP, ref model.CpuTemp);
-                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_MB_TEMP, ref model.MBTemp);
-                foreach (ESCORE_FAN_ID id in Enum.GetValues(typeof(ESCORE_FAN_ID)))
+                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_TEMP, ref _model.CPUTemperature);
+                AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_MB_TEMP, ref _model.MBTemperature);
+                foreach (ESCORE_FAN_ID fanID in Enum.GetValues(typeof(ESCORE_FAN_ID)))
                 {
-                    FanBase basefan = aSRockUsingFans.FirstOrDefault(p => p.Name == id.ToString());
-                    if (basefan != null)
+                    FanBase baseFan = _aSRockUsingFans.FirstOrDefault(p => p.Name == fanID.ToString());
+                    if (baseFan != null)
                     {
-                        switch (id)
+                        switch (fanID)
                         {
                             case ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN1:
                                 AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CPU_FAN1_SPEED, ref value);
@@ -91,7 +90,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
                                 AsrockFanDll.AsrLibGetHardwareMonitor(ESCORE_HWM_ITEM.ESCORE_HWM_CHASSIS_FAN4_SPEED, ref value);
                                 break;
                         }
-                        basefan.CurrentRPM = Convert.ToInt16(value);
+                        baseFan.CurrentRPM = Convert.ToInt16(value);
                     }
                 }
                 Thread.Sleep(300);
@@ -102,11 +101,11 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         {
             return AsrockFanDll.AsrLibDllInit();
         }
- 
+
         public void Dispose()
         {
-            workBool = false;
-            stateThread.Join();
+            _workBool = false;
+            _stateThread.Join();
             AsrockFanDll.AsrLibDllUnInit();
         }
     }

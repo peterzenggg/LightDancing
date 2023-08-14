@@ -61,7 +61,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         Fan,
         None,
     }
-    
+
     internal class AsrockLedDll
     {
         private const string DLL_PATH = @"AsrPolychromeSDK64.dll";

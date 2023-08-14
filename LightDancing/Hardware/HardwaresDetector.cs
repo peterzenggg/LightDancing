@@ -719,14 +719,14 @@ namespace LightDancing.Hardware
             }
         }
 
-        public void SetAsRockFanControll(List<ESCORE_FAN_ID> IdList)
+        public void SetASRockFanControll(List<ESCORE_FAN_ID> idList)
         {
             if (_usbDevices != null && _usbDevices.Count > 0)
             {
                 int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
                 if (index >= 0)
                 {
-                    ((AsRockMotherBoard)_usbDevices[index]).SetFanList(IdList);
+                    ((AsRockMotherBoard)_usbDevices[index]).SetFanList(idList);
                 }
                 else
                 {
@@ -735,15 +735,31 @@ namespace LightDancing.Hardware
             }
         }
 
-        public AsrockMotherBoardModel GetMotherBoardTempModel()
+        public void SetASRockLedModeList(List<AsrockMode> settingList)
         {
             if (_usbDevices != null && _usbDevices.Count > 0)
             {
                 int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
                 if (index >= 0)
                 {
-                    AsrockMotherBoardModel Result = ((AsRockMotherBoard)_usbDevices[index]).GetTempMode();
-                    return Result;
+                    ((AsRockMotherBoard)_usbDevices[index]).SetModeList(settingList);
+                }
+                else
+                {
+                    Debug.WriteLine("Not Find AsRockMotherBoard Device");
+                }
+            }
+        }
+
+        public ASRockMotherBoardModel GetMotherBoardTempModel()
+        {
+            if (_usbDevices != null && _usbDevices.Count > 0)
+            {
+                int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
+                if (index >= 0)
+                {
+                    ASRockMotherBoardModel result = ((AsRockMotherBoard)_usbDevices[index]).GetTemperatureMode();
+                    return result;
                 }
                 else
                 {
@@ -764,8 +780,8 @@ namespace LightDancing.Hardware
                 int index = _usbDevices.FindIndex(x => x.GetType() == typeof(AsRockMotherBoard));
                 if (index >= 0)
                 {
-                    List<AsrockMode> Result = ((AsRockMotherBoard)_usbDevices[index]).GetLedControlList();
-                    return Result;
+                    List<AsrockMode> result = ((AsRockMotherBoard)_usbDevices[index]).GetLedControlList();
+                    return result;
                 }
                 else
                 {
@@ -783,6 +799,7 @@ namespace LightDancing.Hardware
         {
             DeviceList_Changed();
         }
+
         /// <summary>
         /// Set mini hub fan speed
         /// </summary>

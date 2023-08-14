@@ -12,9 +12,9 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         {
             if (UsbHotSwap.GetBoardName() == MOTHERBOARDNAME)
             {
-                bool FanGetInit = AsrockFanController.InitFunction();
-                uint LedGetInit = AsrockLedController.InitFunction();
-                if (LedGetInit == 0 && FanGetInit)
+                bool fanGetInit = ASRockFanController.InitFunction();
+                uint ledGetInit = AsrockLedController.InitFunction();
+                if (ledGetInit == 0 && fanGetInit)
                 {
                     List<USBDeviceBase> hardwares = new List<USBDeviceBase>();
                     if (AsRockMotherBoard.Instance == null)
@@ -45,45 +45,41 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
     class AsRockMotherBoard : USBDeviceBase
     {
         public static AsRockMotherBoard Instance;
-        private AsrockFanController fanController;
-        private AsrockLedController ledController;
-        private List<ESCORE_FAN_ID> settingList = new List<ESCORE_FAN_ID>()
-        {
-            ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN1,
-            ESCORE_FAN_ID.ESCORE_FANID_CPU_FAN2,
-            ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN1,
-            ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN2,
-            ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN3,
-            ESCORE_FAN_ID.ESCORE_FANID_CHASSIS_FAN4,
-        };
-
-        private List<AsrockMode> nowModeList;
-        private string name;
+        private readonly ASRockFanController _fanController;
+        private readonly AsrockLedController _ledController;
+        private readonly string _name;
+        private List<ESCORE_FAN_ID> _settingList = new List<ESCORE_FAN_ID>();
+        private List<AsrockMode> _nowModeList;
         public AsRockMotherBoard(string MotherBoardName) : base()
         {
-            name = MotherBoardName;
+            _name = MotherBoardName;
             _model = InitModel();
-            fanController = new AsrockFanController();
-            ledController = new AsrockLedController(_model);
+            _fanController = new ASRockFanController();
+            _ledController = new AsrockLedController(_model);
             ChangeLightDevice();
         }
 
         public void ChangeLightDevice()
         {
             _lightingBase = InitDevice();
-            nowModeList = ledController.GetModeDeepList();
+            _nowModeList = _ledController.GetModeDeepList();
         }
 
-        public void SetFanList(List<ESCORE_FAN_ID> List)
+        public void SetFanList(List<ESCORE_FAN_ID> fanList)
         {
-            settingList = List;
+            _settingList = fanList;
+        }
+
+        public void SetModeList(List<AsrockMode> settingList)
+        {
+            _ledController.SetModeList(settingList);
         }
 
         public List<FanGroup> GetFanGroups()
         {
             List<FanGroup> result = new List<FanGroup>();
             List<FanBase> fans = new List<FanBase>();
-            fans = fanController.GetFanList(settingList);
+            fans = _fanController.GetFanList(_settingList);
             foreach (FanBase baseFan in fans)
             {
                 FanGroup fangroup = new FanGroup();
@@ -93,20 +89,20 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             return result;
         }
 
-        public AsrockMotherBoardModel GetTempMode()
+        public ASRockMotherBoardModel GetTemperatureMode()
         {
-            return fanController.GetModel();
+            return _fanController.GetModel();
         }
 
         public List<AsrockMode> GetLedControlList()
         {
-            return ledController.GetModeList();
+            return _ledController.GetModeList();
         }
 
         public override void TurnFwAnimationOn()
         {
-            fanController.TurnBackToFW();
-            ledController.TurnBackToFW();
+            _fanController.TurnBackToFW();
+            _ledController.TurnBackToFW();
         }
 
         protected override HardwareModel InitModel()
@@ -114,13 +110,13 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             return new HardwareModel()
             {
                 FirmwareVersion = "NA",
-                Name = name
+                Name = _name
             };
         }
 
         protected override List<LightingBase> InitDevice()
         {
-            return ledController.ChangeCommit();
+            return _ledController.ChangeCommit();
         }
 
         protected override void SendToHardware(bool process, float brightness)
@@ -128,7 +124,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
             uint result = 0;
             for (int i = 0; i < _lightingBase.Count; i++)
             {
-                AsrockMode nodeState = nowModeList[i];
+                AsrockMode nodeState = _nowModeList[i];
                 LightingBase lightBase = _lightingBase[i];
                 lightBase.ProcessStreaming(false, brightness);
                 List<ASRLIB_LedColor> resultCololr = GetColorList(lightBase.GetDisplayColors());
@@ -152,7 +148,7 @@ namespace LightDancing.Hardware.Devices.UniversalDevice.AsRock.MotherBoard
         private List<ASRLIB_LedColor> GetColorList(List<byte> byteList)
         {
             List<ASRLIB_LedColor> Results = new List<ASRLIB_LedColor>();
-            for (int i = 0; i < byteList.Count; i+=3)
+            for (int i = 0; i < byteList.Count; i += 3)
             {
                 Results.Add(new ASRLIB_LedColor() { ColorR = byteList[i], ColorG = byteList[i + 1], ColorB = byteList[i + 2] });
             }
